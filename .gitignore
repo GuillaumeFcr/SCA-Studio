@@ -1,0 +1,6 @@
+__pycache__
+
+logs.txt
+configs/**
+measures/**
+!.gitkeep
