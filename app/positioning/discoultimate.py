@@ -71,7 +71,7 @@ class Positioning:
         )
 
         self.read()  # wait for successful connection
-        self.send(self.UNIT_MM)  # set units to millimeters
+        self.send(self.UNIT_MM + self.EOL)  # set units to millimeters
 
     @device_logger
     def disconnect(self):
