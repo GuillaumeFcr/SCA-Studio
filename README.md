@@ -21,7 +21,7 @@ Documentation is available in French in `docs`, and can be opened directly from 
 Clone the repo:
 
 ```
-git clone https://github.com/Petitoto/SCA-Studio
+git clone https://github.com/GuillaumeFcr/SCA-Studio
 cd SCA-Studio
 ```
 
