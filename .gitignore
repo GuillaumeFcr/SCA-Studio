@@ -4,3 +4,4 @@ logs.txt
 configs/**
 measures/**
 !.gitkeep
+.venv
