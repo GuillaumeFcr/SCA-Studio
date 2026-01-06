@@ -1607,6 +1607,7 @@
        <layout class="QVBoxLayout" name="verticalLayout_emission">
 
 
+
         <item>
          <widget class="QGroupBox" name="emissionConnectGroupBox">
           <property name="sizePolicy">
