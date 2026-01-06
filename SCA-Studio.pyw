@@ -50,5 +50,5 @@ if __name__ == "__main__":
     emission = EmissionUi(window, devices)
 
     # Run the app
-    window.show()
+    window.showMaximized()
     sys.exit(app.exec())

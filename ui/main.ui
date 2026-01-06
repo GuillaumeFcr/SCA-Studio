@@ -1590,7 +1590,14 @@
       </widget>
 
 
-      <widget class="QWidget" name="emissionTab">
+
+
+
+
+
+
+
+      <widget class="QWidget" name="emissionTab" native="true">
        <property name="accessibleName">
         <string>PositioningTab</string>
        </property>
@@ -1617,6 +1624,12 @@
 
         <item>
          <widget class="QGroupBox" name="emissionModeGroupBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="title">
            <string>Mode</string>
           </property>
@@ -1635,39 +1648,83 @@
              </property>
             </widget>
            </item>
+           <item>
+            <spacer name="horizontalSpacer">
+            <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+            <size>
+                <width>40</width>
+                <height>20</height>
+            </size>
+            </property>
+            <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+            </property>
+            </spacer>
+            </item>
           </layout>
          </widget>
         </item>
 
         <item>
         <widget class="QGroupBox" name="emissionFrequencyGroupBox">
-            <property name="title">
+        <property name="title">
+        <string>Frequency</string>
+        </property>
+
+        <layout class="QGridLayout" name="gridLayout_frequency">
+        <property name="columnStretch">
+        <string>1,2</string>
+        </property>
+
+        <!-- Radio buttons -->
+        <item row="0" column="0">
+        <widget class="QRadioButton" name="frequencyRadio">
+        <property name="text">
             <string>Frequency</string>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_frequency">
-            <item row="0" column="0">
-            <widget class="QRadioButton" name="frequencyRadio">
-            <property name="text">
-                <string>Frequency</string>
-            </property>
-            </widget>
-            </item>
-            <item row="0" column="1">
-            <widget class="QRadioButton" name="periodRadio">
-            <property name="text">
-                <string>Period</string>
-            </property>
-            </widget>
-            </item>
-            <item row="1" column="0">
-            <widget class="QDoubleSpinBox" name="frequencySpinBox"/>
-            </item>
-            <item row="1" column="1">
-            <widget class="QSlider" name="frequencySlider"/>
-            </item>
-            </layout>
+        </property>
         </widget>
         </item>
+
+        <item row="0" column="1">
+        <widget class="QRadioButton" name="periodRadio">
+        <property name="text">
+            <string>Period</string>
+        </property>
+        </widget>
+        </item>
+
+        <item row="0" column="2">
+        <spacer name="frequencySpacer">
+        <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+        </property>
+        </spacer>
+        </item>
+
+        <!-- Controls -->
+        <item row="1" column="0">
+        <widget class="QDoubleSpinBox" name="frequencySpinBox"/>
+        </item>
+
+        <item row="1" column="1">
+        <widget class="QSlider" name="frequencySlider">
+        <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+        </property>
+        </widget>
+        </item>
+        </layout>
+
+        </widget>
+        </item>
+
+
 
         <item>
         <widget class="QGroupBox" name="pulseLevelGroupBox">
@@ -1759,6 +1816,19 @@
 
        </layout>
       </widget>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
