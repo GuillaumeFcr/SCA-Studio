@@ -1602,7 +1602,7 @@
         <string>PositioningTab</string>
        </property>
        <attribute name="title">
-        <string>Emission</string>
+        <string>Emission parameters</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_emission">
 
@@ -1823,7 +1823,19 @@
 
 
 
+      <widget class="QWidget" name="emissionTab" native="true">
+       <property name="accessibleName">
+        <string>PositioningTab</string>
+       </property>
+       <attribute name="title">
+        <string>Emission results</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_emission">
 
+
+
+       </layout>
+      </widget>
 
 
 
