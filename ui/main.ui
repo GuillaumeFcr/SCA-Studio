@@ -43,7 +43,7 @@
    <bool>false</bool>
   </property>
   <property name="dockOptions">
-   <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+   <set>QMainWindow::DockOption::AllowTabbedDocks|QMainWindow::DockOption::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_8">
@@ -77,13 +77,19 @@
        </size>
       </property>
       <property name="tabPosition">
-       <enum>QTabWidget::North</enum>
+       <enum>QTabWidget::TabPosition::North</enum>
       </property>
       <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
+       <enum>QTabWidget::TabShape::Triangular</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
+      </property>
+      <property name="elideMode">
+       <enum>Qt::TextElideMode::ElideNone</enum>
+      </property>
+      <property name="usesScrollButtons">
+       <bool>true</bool>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -100,6 +106,9 @@
        </property>
        <attribute name="title">
         <string>Positioning</string>
+       </attribute>
+       <attribute name="toolTip">
+        <string>Positionnement du banc</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -532,7 +541,7 @@
               <item row="4" column="0" colspan="3">
                <spacer name="positioningVerticalSpacer">
                 <property name="orientation">
-                 <enum>Qt::Vertical</enum>
+                 <enum>Qt::Orientation::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -725,25 +734,25 @@
                  <cursorShape>OpenHandCursor</cursorShape>
                 </property>
                 <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="horizontalScrollBarPolicy">
-                 <enum>Qt::ScrollBarAlwaysOff</enum>
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                 </property>
                 <property name="interactive">
                  <bool>true</bool>
                 </property>
                 <property name="renderHints">
-                 <set>QPainter::Antialiasing|QPainter::TextAntialiasing</set>
+                 <set>QPainter::RenderHint::Antialiasing|QPainter::RenderHint::TextAntialiasing</set>
                 </property>
                 <property name="dragMode">
-                 <enum>QGraphicsView::ScrollHandDrag</enum>
+                 <enum>QGraphicsView::DragMode::ScrollHandDrag</enum>
                 </property>
                 <property name="transformationAnchor">
-                 <enum>QGraphicsView::AnchorUnderMouse</enum>
+                 <enum>QGraphicsView::ViewportAnchor::AnchorUnderMouse</enum>
                 </property>
                 <property name="resizeAnchor">
-                 <enum>QGraphicsView::AnchorViewCenter</enum>
+                 <enum>QGraphicsView::ViewportAnchor::AnchorViewCenter</enum>
                 </property>
                </widget>
               </item>
@@ -942,6 +951,9 @@
        <attribute name="title">
         <string>Oscilloscope</string>
        </attribute>
+       <attribute name="toolTip">
+        <string>Paramétrage de l'oscilloscope</string>
+       </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QGroupBox" name="oscilloscopeConnectGroupBox">
@@ -1043,7 +1055,7 @@
            <item row="2" column="0" colspan="5">
             <widget class="QPlainTextEdit" name="oscilloscopeChannelsTextEdit">
              <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+              <enum>QFrame::Shape::StyledPanel</enum>
              </property>
             </widget>
            </item>
@@ -1153,7 +1165,20 @@
        <attribute name="title">
         <string>Acquisition</string>
        </attribute>
+       <attribute name="toolTip">
+        <string>Lancement d'un test </string>
+       </attribute>
        <layout class="QGridLayout" name="gridLayout_5">
+        <item row="2" column="1">
+         <widget class="QProgressBar" name="acquisitionProgressBar">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="0" colspan="2">
          <widget class="QGroupBox" name="acquisitionGroupBox">
           <property name="sizePolicy">
@@ -1197,7 +1222,7 @@
                  </sizepolicy>
                 </property>
                 <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
+                 <enum>Qt::LayoutDirection::LeftToRight</enum>
                 </property>
                 <property name="text">
                  <string>Map the area of interest</string>
@@ -1244,13 +1269,13 @@
                  </sizepolicy>
                 </property>
                 <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
+                 <enum>Qt::LayoutDirection::LeftToRight</enum>
                 </property>
                 <property name="text">
                  <string>Number of algorithm runs for one measure:</string>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                 <set>Qt::AlignmentFlag::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -1282,13 +1307,13 @@
                  </sizepolicy>
                 </property>
                 <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
+                 <enum>Qt::LayoutDirection::LeftToRight</enum>
                 </property>
                 <property name="text">
                  <string>Grid size of the area of interest:</string>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                 <set>Qt::AlignmentFlag::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -1307,13 +1332,13 @@
               </sizepolicy>
              </property>
              <property name="layoutDirection">
-              <enum>Qt::LeftToRight</enum>
+              <enum>Qt::LayoutDirection::LeftToRight</enum>
              </property>
              <property name="title">
               <string>Display data on camera picture</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignHCenter|Qt::AlignTop</set>
+              <set>Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignTop</set>
              </property>
              <property name="flat">
               <bool>false</bool>
@@ -1359,7 +1384,7 @@
                  </sizepolicy>
                 </property>
                 <property name="layoutDirection">
-                 <enum>Qt::RightToLeft</enum>
+                 <enum>Qt::LayoutDirection::RightToLeft</enum>
                 </property>
                 <property name="text">
                  <string>Error rate</string>
@@ -1382,16 +1407,6 @@
           </property>
           <property name="text">
            <string>Start acquisition</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QProgressBar" name="acquisitionProgressBar">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="value">
-           <number>0</number>
           </property>
          </widget>
         </item>
@@ -1588,261 +1603,304 @@
         </item>
        </layout>
       </widget>
-
-
-
-
-
-
-
-
-
-      <widget class="QWidget" name="emissionTab" native="true">
+      <widget class="QWidget" name="ParamTab">
        <property name="accessibleName">
-        <string>PositioningTab</string>
+        <string>Param_emission</string>
        </property>
        <attribute name="title">
-        <string>Emission parameters</string>
+        <string>Parametres_emission</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_emission">
-
-
-
-        <item>
-         <widget class="QGroupBox" name="emissionConnectGroupBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Connection</string>
-          </property>
-         </widget>
+       <attribute name="toolTip">
+        <string>Paramétrage d'une attaque</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_67">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_13">
+          <item>
+           <widget class="QGroupBox" name="groupBox_8">
+            <property name="title">
+             <string>Connexion</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <widget class="QComboBox" name="comboBox">
+                 <property name="placeholderText">
+                  <string>Device</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_2">
+                 <property name="text">
+                  <string>Se connecter</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_3">
+               <property name="text">
+                <string>Check Status</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Parametres</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
+             <item>
+              <widget class="QGroupBox" name="groupBox_3">
+               <property name="title">
+                <string>Mode</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <item>
+                 <widget class="QRadioButton" name="radioButton_2">
+                  <property name="text">
+                   <string>Pulse mode</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="radioButton">
+                  <property name="text">
+                   <string>Burst mode</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_4">
+               <property name="title">
+                <string>Frequency</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_14">
+                <item row="0" column="1">
+                 <widget class="QRadioButton" name="radioButton_4">
+                  <property name="text">
+                   <string>Period</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QRadioButton" name="radioButton_3">
+                  <property name="text">
+                   <string>Frequency</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_5">
+               <property name="title">
+                <string>Pulse level</string>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_8">
+                <item>
+                 <widget class="QSlider" name="horizontalSlider">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_6">
+               <property name="title">
+                <string>Counter / Timer</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_17">
+                <item row="2" column="0">
+                 <widget class="QRadioButton" name="radioButton_7">
+                  <property name="text">
+                   <string>Timer</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QRadioButton" name="radioButton_5">
+                  <property name="text">
+                   <string>Disable</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QRadioButton" name="radioButton_6">
+                  <property name="text">
+                   <string>Pulse Counter</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_7">
+               <property name="title">
+                <string>Trigger delay</string>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_12">
+                <item>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_4"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <item>
+                <widget class="QPushButton" name="pushButton">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Save and view waveform</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </item>
-
-
-        <item>
-         <widget class="QGroupBox" name="emissionModeGroupBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="groupBox_2">
           <property name="title">
-           <string>Mode</string>
+           <string>Preview</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_mode">
+          <layout class="QVBoxLayout" name="verticalLayout_10">
            <item>
-            <widget class="QRadioButton" name="pulseModeRadio">
-             <property name="text">
-              <string>Pulse Mode</string>
+            <widget class="QGraphicsView" name="graphicsView">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QRadioButton" name="burstModeRadio">
-             <property name="text">
-              <string>Burst Mode</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer">
-            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-            <size>
-                <width>40</width>
-                <height>20</height>
-            </size>
-            </property>
-            <property name="sizeType">
-            <enum>QSizePolicy::Expanding</enum>
-            </property>
-            </spacer>
-            </item>
           </layout>
          </widget>
         </item>
-
-        <item>
-        <widget class="QGroupBox" name="emissionFrequencyGroupBox">
-        <property name="title">
-        <string>Frequency</string>
-        </property>
-
-        <layout class="QGridLayout" name="gridLayout_frequency">
-        <property name="columnStretch">
-        <string>1,2</string>
-        </property>
-
-        <item row="0" column="0">
-        <widget class="QRadioButton" name="frequencyRadio">
-        <property name="text">
-            <string>Frequency</string>
-        </property>
-        </widget>
-        </item>
-
-        <item row="0" column="1">
-        <widget class="QRadioButton" name="periodRadio">
-        <property name="text">
-            <string>Period</string>
-        </property>
-        </widget>
-        </item>
-
-        <item row="0" column="2">
-        <spacer name="frequencySpacer">
-        <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-            <enum>QSizePolicy::Expanding</enum>
-        </property>
-        </spacer>
-        </item>
-
-        <item row="1" column="0">
-        <widget class="QDoubleSpinBox" name="frequencySpinBox"/>
-        </item>
-
-        <item row="1" column="1">
-        <widget class="QSlider" name="frequencySlider">
-        <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-        </property>
-        </widget>
-        </item>
-        </layout>
-
-        </widget>
-        </item>
-
-
-
-        <item>
-        <widget class="QGroupBox" name="pulseLevelGroupBox">
-            <property name="title">
-            <string>Pulse Level</string>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_pulseLevel">
-            <item row="0" column="0">
-            <widget class="QDoubleSpinBox" name="pulseLevelSpinBox"/>
-            </item>
-            <item row="0" column="1">
-            <widget class="QSlider" name="pulseLevelSlider"/>
-            </item>
-            </layout>
-        </widget>
-        </item>
-
-        <item>
-        <widget class="QGroupBox" name="counterTimerGroupBox">
-            <property name="title">
-            <string>Counter / Timer</string>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_counterTimer">
-            <item row="0" column="0">
-            <widget class="QRadioButton" name="disableCounterRadio">
-            <property name="text">
-                <string>Disable</string>
-            </property>
-            </widget>
-            </item>
-            <item row="1" column="0">
-            <widget class="QRadioButton" name="pulseCounterRadio">
-            <property name="text">
-                <string>Pulse Counter</string>
-            </property>
-            </widget>
-            </item>
-            <item row="1" column="1">
-            <widget class="QSpinBox" name="pulseCounterSpinBox"/>
-            </item>
-            <item row="2" column="0">
-            <widget class="QRadioButton" name="timerRadio">
-            <property name="text">
-                <string>Timer</string>
-            </property>
-            </widget>
-            </item>
-            <item row="2" column="1">
-            <widget class="QTimeEdit" name="timerEdit"/>
-            </item>
-            </layout>
-        </widget>
-        </item>
-
-        <item>
-        <widget class="QGroupBox" name="triggerDelayGroupBox">
-            <property name="title">
-            <string>Trigger Delay</string>
-            </property>
-            <layout class="QFormLayout" name="formLayout_triggerDelay">
-            <item row="0" column="1">
-            <widget class="QLineEdit" name="triggerDelayEdit"/>
-            </item>
-            </layout>
-        </widget>
-        </item>
-
-        <item>
-        <widget class="QWidget" name="emissionActionWidget">
-            <layout class="QHBoxLayout" name="horizontalLayout_actions">
-            <item>
-            <widget class="QPushButton" name="startPulsingButton">
-            <property name="text">
-                <string>Start Pulsing</string>
-            </property>
-            </widget>
-            </item>
-            <item>
-            <widget class="QPushButton" name="singlePulseButton">
-            <property name="text">
-                <string>Single Pulse</string>
-            </property>
-            </widget>
-            </item>
-            </layout>
-        </widget>
-        </item>
-
-
        </layout>
       </widget>
-
-
-
-
-
-
-
-
-      <widget class="QWidget" name="emissionTab" native="true">
+      <widget class="QWidget" name="ResultTab">
        <property name="accessibleName">
-        <string>PositioningTab</string>
+        <string>Results_emission</string>
        </property>
        <attribute name="title">
-        <string>Emission results</string>
+        <string>attaque</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_emission">
-
-
-
+       <attribute name="toolTip">
+        <string>Visualisation des résultats</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_42">
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="groupBox_9">
+          <property name="title">
+           <string>Sauvegarde émission</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_11">
+           <item>
+            <widget class="QPushButton" name="pushButton_4">
+             <property name="text">
+              <string>Select output directory</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QGroupBox" name="groupBox_10">
+          <property name="title">
+           <string>Machin</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QRadioButton" name="radioButton_9">
+             <property name="text">
+              <string>RadioButton</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="groupBox_11">
+          <property name="title">
+           <string>Analyse </string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <item>
+            <widget class="QRadioButton" name="radioButton_8">
+             <property name="text">
+              <string>RadioButton</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QGroupBox" name="groupBox_12">
+          <property name="title">
+           <string>Truc</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <item>
+            <widget class="QRadioButton" name="radioButton_10">
+             <property name="text">
+              <string>RadioButton</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
        </layout>
       </widget>
-
-
-
-
-
-
-
      </widget>
     </item>
    </layout>
@@ -1853,7 +1911,7 @@
      <x>0</x>
      <y>0</y>
      <width>1110</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="sizePolicy">
