@@ -5,3 +5,4 @@ configs/**
 measures/**
 !.gitkeep
 .venv
+Install 1.9.20
