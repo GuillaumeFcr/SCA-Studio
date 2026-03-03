@@ -1,7 +1,7 @@
 from ctypes import cdll
 from app.utils.logging import device_logger
 
-# lib = cdll.LoadLibrary("/home/guillaume/SCA-Studio/Install 1.9.20/bps202.dll")
+lib = cdll.LoadLibrary("Install 1.9.20/bps202.dll")
 
 
 class Injector:
@@ -23,13 +23,13 @@ class Injector:
         self._low_jitter_trigger_delay = 0
         self._control = 1
         self.connect()
-        self._pulse_levels = lib.bps_get_pulse_levels()
 
     @device_logger
     def connect(self):
         lib.bps_init()
         while lib.bps_get_status() < 0:
             pass
+        self._pulse_levels = lib.bps_get_pulse_levels()
 
     @device_logger
     def disconnect(self):
@@ -159,9 +159,10 @@ class Injector:
     @device_logger
     def send_injection(self):
         lib.bps_control(self._control)
-        while lib.bps_get_status() < 1:
-            pass
-        # measure....
+        if self._control == 1:
+            while lib.bps_get_status() < 1:
+                pass
+            # measure....
         lib.bps_control(0)
         while lib.bps_get_status() > 0:
             pass
