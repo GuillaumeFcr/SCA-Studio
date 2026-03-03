@@ -71,6 +71,18 @@ class AttackParamUi:
         # 7. Bouton Save / Action
         self.ui.pushButton_SaveEmit.clicked.connect(self.on_save_view_clicked)
 
+
+
+                # --- RECUPERATION DES VALEURS ---
+        # On utilise .value() pour les SpinBox et .isChecked() pour les Radio
+
+        self.is_pulse = None
+        self.freq = None
+        self.level = self.ui.horizontalSlider_Pluse_Level.value()
+        self.counter = None
+        self.delay = self.ui.doubleSpinBox_TriggerDelay.value()
+
+
     # --- Définition des fonctions (Slots) ---
 
     @handle("Connexion à l'injecteur")
@@ -87,11 +99,13 @@ class AttackParamUi:
     @handle("Changement Mode d'émission")
     def on_radioPulseMode_toggled(self, checked):
         if checked:
+            self.is_pulse = self.ui.radioPulseMode.isChecked() #True si est coche, sinon False
             print("Mode Pulse activé")
 
     @handle("Changement Mode Burst")
     def on_radioBurstMode_toggled(self, checked):
         if checked:
+            self.is_pulse = not self.ui.radioBurstMode.isChecked()
             print("Mode Burst activé")
 
     @handle("Changement Unité (Fréquence/Période)")
@@ -106,6 +120,8 @@ class AttackParamUi:
 
     @handle("Modification Valeur Fréquence/Période")
     def on_frequency_changed(self, val):
+        frequ_temp = self.ui.doubleSpinBox_Frequency.value()
+
         print(f"Nouvelle valeur temporelle : {val}")
 
     @handle("Modification Niveau Pulse")
@@ -147,13 +163,6 @@ class AttackParamUi:
             self.ui.graphicsView.setScene(self.scene)
 
         print("Mise à jour de la prévisualisation...")
-
-        # --- RECUPERATION DES VALEURS ---
-        # On utilise .value() pour les SpinBox et .isChecked() pour les Radio
-        freq = self.ui.doubleSpinBox_Frequency.value()
-        level = self.ui.horizontalSlider_Pluse_Level.value()
-        delay = self.ui.doubleSpinBox_TriggerDelay.value()
-        is_pulse = self.ui.radioPulseMode.isChecked()
 
         # --- CRÉATION DU PLOT MATPLOTLIB ---
         # On crée une figure (ajustez figsize pour que ça rentre bien)
