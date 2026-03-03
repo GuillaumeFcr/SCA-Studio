@@ -1605,10 +1605,10 @@
       </widget>
       <widget class="QWidget" name="ParamTab">
        <property name="accessibleName">
-        <string>Param_emission</string>
+        <string>Param_emissionTab</string>
        </property>
        <attribute name="title">
-        <string>Parametres_emission</string>
+        <string>Attack Parameters</string>
        </attribute>
        <attribute name="toolTip">
         <string>Paramétrage d'une attaque</string>
@@ -1634,7 +1634,7 @@
                <item>
                 <widget class="QPushButton" name="pushButton_2">
                  <property name="text">
-                  <string>Se connecter</string>
+                  <string>Connect</string>
                  </property>
                 </widget>
                </item>
@@ -1659,7 +1659,7 @@
              </sizepolicy>
             </property>
             <property name="title">
-             <string>Parametres</string>
+             <string>Parameters</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_7">
              <item>
@@ -1669,14 +1669,14 @@
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_7">
                 <item>
-                 <widget class="QRadioButton" name="radioButton_2">
+                 <widget class="QRadioButton" name="radioPulseMode">
                   <property name="text">
                    <string>Pulse mode</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QRadioButton" name="radioButton">
+                 <widget class="QRadioButton" name="radioBurstMode">
                   <property name="text">
                    <string>Burst mode</string>
                   </property>
@@ -1692,21 +1692,21 @@
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
                 <item row="0" column="1">
-                 <widget class="QRadioButton" name="radioButton_4">
+                 <widget class="QRadioButton" name="radioPeriod">
                   <property name="text">
                    <string>Period</string>
                   </property>
                  </widget>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QRadioButton" name="radioButton_3">
+                 <widget class="QRadioButton" name="radioFrequency">
                   <property name="text">
                    <string>Frequency</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_Frequency"/>
                 </item>
                </layout>
               </widget>
@@ -1718,7 +1718,7 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">
                 <item>
-                 <widget class="QSlider" name="horizontalSlider">
+                 <widget class="QSlider" name="horizontalSlider_Pluse_Level">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1740,31 +1740,31 @@
                </property>
                <layout class="QGridLayout" name="gridLayout_17">
                 <item row="2" column="0">
-                 <widget class="QRadioButton" name="radioButton_7">
+                 <widget class="QRadioButton" name="radioTimer">
                   <property name="text">
                    <string>Timer</string>
                   </property>
                  </widget>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QRadioButton" name="radioButton_5">
+                 <widget class="QRadioButton" name="radioDisableCounter">
                   <property name="text">
                    <string>Disable</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QRadioButton" name="radioButton_6">
+                 <widget class="QRadioButton" name="radioPulseCounter">
                   <property name="text">
                    <string>Pulse Counter</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_PulseCounter"/>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_Timer"/>
                 </item>
                </layout>
               </widget>
@@ -1776,7 +1776,7 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_12">
                 <item>
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_4"/>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_TriggerDelay"/>
                 </item>
                </layout>
               </widget>
@@ -1784,7 +1784,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
-                <widget class="QPushButton" name="pushButton">
+                <widget class="QPushButton" name="pushButton_SaveEmit">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1829,7 +1829,7 @@
         <string>Results_emission</string>
        </property>
        <attribute name="title">
-        <string>attaque</string>
+        <string>Attack Results</string>
        </attribute>
        <attribute name="toolTip">
         <string>Visualisation des résultats</string>
