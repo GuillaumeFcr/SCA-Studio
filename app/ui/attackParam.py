@@ -1,6 +1,8 @@
 from enum import Enum
 
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from PySide6 import QtGui
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication, QGraphicsPixmapItem, QGraphicsScene, QGraphicsView, QMessageBox
@@ -30,91 +32,160 @@ class AttackParamUi:
         # Initialisation du device Injector (comme dans emission.py)
         self.devices.injector = None
         self.injector_devices = get_available_devices("injectors")
-        if self.injector_devices:
-            self.devices.injector = self.injector_devices[0]()
-            # Si vous avez un ComboBox pour choisir l'injecteur :
-            # for injector in self.injector_devices:
-            #     self.ui.injectorDeviceComboBox.addItem(injector.name)
+
+
+        # INITIALISATION DE LA SCÈNE
+        self.scene = QGraphicsScene()
+        if hasattr(self.ui, 'graphicsView'):
+            self.ui.graphicsView.setScene(self.scene)
 
         # --- Connexion des signaux (Signaux -> Slots) ---
 
-        # Modes d'émission
-        self.ui.pulseModeRadio.toggled.connect(self.on_pulseModeRadio_toggled)
-        self.ui.cwModeRadio.toggled.connect(self.on_cwModeRadio_toggled)
+        # 1. Connexion (Groupbox Connexion)
+        self.ui.pushButton_2.clicked.connect(self.on_connect_clicked)      # Bouton "Connect"
+        self.ui.pushButton_3.clicked.connect(self.on_check_status_clicked) # Bouton "Check Status"
 
-        # Paramètres de fréquence et niveau
-        self.ui.frequencySpinBox.valueChanged.connect(self.on_frequencySpinBox_changed)
-        self.ui.pulseLevelSlider.valueChanged.connect(self.on_pulseLevelSlider_changed)
+        # 2. Modes (radioPulseMode, radioBurstMode)
+        self.ui.radioPulseMode.toggled.connect(self.on_radioPulseMode_toggled)
+        self.ui.radioBurstMode.toggled.connect(self.on_radioBurstMode_toggled)
 
-        # Modes de comptage / Timer
-        self.ui.disableCounterRadio.toggled.connect(self.on_disableCounterRadio_toggled)
-        self.ui.pulseCounterRadio.toggled.connect(self.on_pulseCounterRadio_toggled)
-        self.ui.timerRadio.toggled.connect(self.on_timerRadio_toggled)
+        # 3. Fréquence / Période
+        self.ui.radioFrequency.toggled.connect(self.on_radioFrequency_toggled)
+        self.ui.radioPeriod.toggled.connect(self.on_radioPeriod_toggled)
+        self.ui.doubleSpinBox_Frequency.valueChanged.connect(self.on_frequency_changed)
 
-        # Valeurs numériques
-        self.ui.pulseCounterSpinBox.valueChanged.connect(self.on_pulseCounterSpinBox_changed)
-        self.ui.triggerDelayEdit.textChanged.connect(self.on_triggerDelayEdit_changed)
+        # 4. Pulse Level (Slider)
+        self.ui.horizontalSlider_Pluse_Level.valueChanged.connect(self.on_pulse_level_changed)
 
-        # Bouton d'action principal (ex: Lancement de l'attaque)
-        # Note : Vérifiez si le bouton s'appelle 'attackRunButton' dans votre UI
-        if hasattr(self.ui, 'attackRunButton'):
-            self.ui.attackRunButton.clicked.connect(self.on_attackRunButton_clicked)
+        # 5. Counter / Timer
+        self.ui.radioDisableCounter.toggled.connect(self.on_counter_mode_changed)
+        self.ui.radioPulseCounter.toggled.connect(self.on_counter_mode_changed)
+        self.ui.radioTimer.toggled.connect(self.on_counter_mode_changed)
+
+        self.ui.doubleSpinBox_PulseCounter.valueChanged.connect(self.on_pulse_counter_val_changed)
+        self.ui.doubleSpinBox_Timer.valueChanged.connect(self.on_timer_val_changed)
+
+        # 6. Trigger Delay
+        self.ui.doubleSpinBox_TriggerDelay.valueChanged.connect(self.on_trigger_delay_changed)
+
+        # 7. Bouton Save / Action
+        self.ui.pushButton_SaveEmit.clicked.connect(self.on_save_view_clicked)
 
     # --- Définition des fonctions (Slots) ---
 
-    @handle("Changement mode Pulse")
-    def on_pulseModeRadio_toggled(self, checked):
-        if checked:
-            print("ezojbfceo")
-            # Insérer le code pour activer le mode pulse sur l'injecteur
-            pass
+    @handle("Connexion à l'injecteur")
+    def on_connect_clicked(self):
+        # Récupère le device sélectionné dans le comboBox
+        device_name = self.ui.comboBox.currentText()
+        print(f"Tentative de connexion à : {device_name}")
+        # Insérez votre logique de connexion ici
 
-    @handle("Changement mode Continu (CW)")
-    def on_cwModeRadio_toggled(self, checked):
-        if checked:
-            # Insérer le code pour activer le mode continu
-            pass
+    @handle("Vérification du statut")
+    def on_check_status_clicked(self):
+        print("Vérification du statut du matériel...")
 
-    @handle("Modification Fréquence")
-    def on_frequencySpinBox_changed(self, val):
-        # Logique pour mettre à jour la fréquence
-        pass
+    @handle("Changement Mode d'émission")
+    def on_radioPulseMode_toggled(self, checked):
+        if checked:
+            print("Mode Pulse activé")
+
+    @handle("Changement Mode Burst")
+    def on_radioBurstMode_toggled(self, checked):
+        if checked:
+            print("Mode Burst activé")
+
+    @handle("Changement Unité (Fréquence/Période)")
+    def on_radioFrequency_toggled(self, checked):
+        if checked:
+            self.ui.doubleSpinBox_Frequency.setSuffix(" Hz")
+
+    @handle("Changement Unité (Fréquence/Période)")
+    def on_radioPeriod_toggled(self, checked):
+        if checked:
+            self.ui.doubleSpinBox_Frequency.setSuffix(" s")
+
+    @handle("Modification Valeur Fréquence/Période")
+    def on_frequency_changed(self, val):
+        print(f"Nouvelle valeur temporelle : {val}")
 
     @handle("Modification Niveau Pulse")
-    def on_pulseLevelSlider_changed(self, val):
+    def on_pulse_level_changed(self, val):
+        # val est un int venant du Slider
         if self.devices.injector:
             self.devices.injector.set_pulse_level_index(val)
+        print(val)
 
-    @handle("Désactivation Compteur")
-    def on_disableCounterRadio_toggled(self, checked):
-        if checked and self.devices.injector:
-            self.devices.injector.set_counter_mode(0)
+    @handle("Changement Mode Compteur/Timer")
+    def on_counter_mode_changed(self, checked):
+        if not checked: return
 
-    @handle("Activation Compteur de Pulses")
-    def on_pulseCounterRadio_toggled(self, checked):
-        if checked and self.devices.injector:
-            self.devices.injector.set_counter_mode(1)
+        if self.ui.radioDisableCounter.isChecked():
+            print("Compteur désactivé")
+        elif self.ui.radioPulseCounter.isChecked():
+            print("Mode Compteur de pulses activé")
+        elif self.ui.radioTimer.isChecked():
+            print("Mode Timer activé")
 
-    @handle("Modification du nombre de pulses")
-    def on_pulseCounterSpinBox_changed(self, val):
+    @handle("Modification Valeur Compteur")
+    def on_pulse_counter_val_changed(self, val):
+        pass
+
+    @handle("Modification Valeur Timer")
+    def on_timer_val_changed(self, val):
+        pass
+
+    @handle("Modification Trigger Delay")
+    def on_trigger_delay_changed(self, val):
         if self.devices.injector:
-            self.devices.injector.set_pulse_counter(val)
+            self.devices.injector.set_trigger_delay(val)
 
-    @handle("Activation Timer")
-    def on_timerRadio_toggled(self, checked):
-        if checked and self.devices.injector:
-            self.devices.injector.set_counter_mode(2)
+    @handle("Sauvegarde et affichage du signal")
+    def on_save_view_clicked(self):
+        # Sécurité : vérifier si la scène existe
+        if not hasattr(self, 'scene'):
+            self.scene = QGraphicsScene()
+            self.ui.graphicsView.setScene(self.scene)
 
-    @handle("Modification du délai de trigger")
-    def on_triggerDelayEdit_changed(self, text):
-        try:
-            val = int(text)
-            if self.devices.injector:
-                self.devices.injector.set_trigger_delay(val)
-        except ValueError:
-            pass
+        print("Mise à jour de la prévisualisation...")
 
-    @handle("Lancement de l'attaque")
-    def on_attackRunButton_clicked(self):
-        # Code pour démarrer l'émission ou l'attaque
-        print("Lancement de l'attaque avec les paramètres définis.")
+        # --- RECUPERATION DES VALEURS ---
+        # On utilise .value() pour les SpinBox et .isChecked() pour les Radio
+        freq = self.ui.doubleSpinBox_Frequency.value()
+        level = self.ui.horizontalSlider_Pluse_Level.value()
+        delay = self.ui.doubleSpinBox_TriggerDelay.value()
+        is_pulse = self.ui.radioPulseMode.isChecked()
+
+        # --- CRÉATION DU PLOT MATPLOTLIB ---
+        # On crée une figure (ajustez figsize pour que ça rentre bien)
+        fig, ax = plt.subplots(figsize=(5, 3), dpi=80)
+
+        # Simulation d'un signal simple (Square wave)
+        # On définit une échelle de temps (ex: 2 cycles)
+        t_max = (1/freq) * 2 if freq > 0 else 0.1
+        t = np.linspace(0, t_max, 500)
+
+        # Logique de dessin : un créneau qui commence après le delay
+        # (Conversion arbitraire du délai pour l'exemple)
+        start_time = delay / 1000
+        signal = np.where((t > start_time) & (t < start_time + t_max/4), level, 0)
+
+        ax.plot(t, signal, 'r-', lw=2)
+        ax.set_title(f"Preview: {'Pulse' if is_pulse else 'Burst'}")
+        ax.set_xlabel("Temps (s)")
+        ax.set_ylabel("Amplitude")
+        ax.grid(True)
+        fig.tight_layout()
+
+        # --- AFFICHAGE DANS QT ---
+        # On transforme la figure en widget
+        canvas = FigureCanvas(fig)
+
+        # On nettoie la scène et on ajoute le nouveau canvas
+        self.scene.clear()
+        self.scene.addWidget(canvas)
+
+        # On force le graphicsView à ajuster sa taille au contenu
+        self.ui.graphicsView.fitInView(self.scene.itemsBoundingRect())
+
+        # Important : Fermer la figure matplotlib pour libérer la mémoire RAM
+        plt.close(fig)
