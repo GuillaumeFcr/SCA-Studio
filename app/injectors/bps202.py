@@ -1,33 +1,34 @@
 from ctypes import cdll
 from app.utils.logging import device_logger
 
-#lib = cdll.LoadLibrary("/home/guillaume/SCA-Studio/Install 1.9.20/bps202.dll")
+# lib = cdll.LoadLibrary("/home/guillaume/SCA-Studio/Install 1.9.20/bps202.dll")
+
 
 class Injector:
     def __init__(self):
-        self.name="bps202"
-        self._alternate=0
-        self._burst_period=10
-        self._pulse_counter=0
-        self._burst_counter=0
-        self._counter_mode=0
-        self._pulse_range_index=0
-        self._pulse_level_index=0
-        self._pulse_polarity=0
-        self._pulse_burst_mode=0
-        self._pulse_period=1000
-        self._pulses_per_burst=10
-        self._trigger_config_mode=[0,1,0,0]
-        self._trigger_delay=10
-        self._low_jitter_trigger_delay=0
-        self._control=1
+        self.name = "bps202"
+        self._alternate = 0
+        self._burst_period = 10
+        self._pulse_counter = 0
+        self._burst_counter = 0
+        self._counter_mode = 0
+        self._pulse_range_index = 0
+        self._pulse_level_index = 0
+        self._pulse_polarity = 0
+        self._pulse_burst_mode = 0
+        self._pulse_period = 1000
+        self._pulses_per_burst = 10
+        self._trigger_config_mode = [0, 1, 0, 0]
+        self._trigger_delay = 10
+        self._low_jitter_trigger_delay = 0
+        self._control = 1
         self.connect()
-        self._pulse_levels=lib.bps_get_pulse_levels()
+        self._pulse_levels = lib.bps_get_pulse_levels()
 
     @device_logger
     def connect(self):
         lib.bps_init()
-        while lib.bps_get_status()<0:
+        while lib.bps_get_status() < 0:
             pass
 
     @device_logger
@@ -35,9 +36,9 @@ class Injector:
         lib.bps_close()
 
     @device_logger
-    def set_control(self,control):
-        if control in [1,2]:
-            self._control=control
+    def set_control(self, control):
+        if control in [1, 2]:
+            self._control = control
 
     @device_logger
     def get_alternate(self):
@@ -158,9 +159,9 @@ class Injector:
     @device_logger
     def send_injection(self):
         lib.bps_control(self._control)
-        while lib.bps_get_status()<1:
+        while lib.bps_get_status() < 1:
             pass
-        #measure....
+        # measure....
         lib.bps_control(0)
-        while lib.bps_get_status()>0:
+        while lib.bps_get_status() > 0:
             pass

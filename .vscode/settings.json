@@ -5,5 +5,4 @@
     },
     "editor.trimAutoWhitespace": true,
     "files.trimTrailingWhitespace": true,
-    "ruff.format.args": ["--config", "line-length=130"]
 }
