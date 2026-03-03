@@ -159,6 +159,8 @@ class AttackParamUi:
         elif self.ui.radioTimer.isChecked():
             print("Mode Timer activé")
             self.devices.injector.set_counter_mode(2)
+            self.devices.injector.set_control(2)
+            self.devices.injector.send_injection()
 
     @handle("Modification Valeur Compteur")
     def on_pulse_counter_val_changed(self, val):
