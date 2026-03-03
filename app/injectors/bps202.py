@@ -5,8 +5,8 @@ lib = cdll.LoadLibrary("Install 1.9.20/bps202.dll")
 
 
 class Injector:
+    name = "bps202"
     def __init__(self):
-        self.name = "bps202"
         self._alternate = 0
         self._burst_period = 10
         self._pulse_counter = 0
