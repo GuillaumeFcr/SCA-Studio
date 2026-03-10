@@ -27,6 +27,9 @@
     <pointsize>9</pointsize>
    </font>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::FocusPolicy::NoFocus</enum>
+  </property>
   <property name="acceptDrops">
    <bool>true</bool>
   </property>
@@ -1619,7 +1622,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_8">
             <property name="title">
-             <string>Connexion</string>
+             <string>Probe connexion</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
@@ -1667,18 +1670,52 @@
                <property name="title">
                 <string>Mode</string>
                </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_7">
-                <item>
-                 <widget class="QRadioButton" name="radioPulseMode">
-                  <property name="text">
-                   <string>Pulse mode</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
+               <layout class="QGridLayout" name="gridLayout_18">
+                <item row="1" column="0">
                  <widget class="QRadioButton" name="radioBurstMode">
                   <property name="text">
                    <string>Burst mode</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <layout class="QFormLayout" name="formLayout">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label">
+                    <property name="text">
+                     <string>Burst period</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QDoubleSpinBox" name="doubleSpinBox_BurstPeriod">
+                    <property name="suffix">
+                     <string>s</string>
+                    </property>
+                    <property name="decimals">
+                     <number>10</number>
+                    </property>
+                    <property name="maximum">
+                     <double>10.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_2">
+                    <property name="text">
+                     <string>Pulse per burst</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QSpinBox" name="spinBox_PulseBurst"/>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QRadioButton" name="radioPulseMode">
+                  <property name="text">
+                   <string>Pulse mode</string>
                   </property>
                  </widget>
                 </item>
@@ -1688,16 +1725,9 @@
              <item>
               <widget class="QGroupBox" name="groupBox_4">
                <property name="title">
-                <string>Frequency</string>
+                <string>Pulse frequency</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
-                <item row="0" column="1">
-                 <widget class="QRadioButton" name="radioPeriod">
-                  <property name="text">
-                   <string>Period</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="0" column="0">
                  <widget class="QRadioButton" name="radioFrequency">
                   <property name="text">
@@ -1706,7 +1736,21 @@
                  </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_Frequency"/>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_Frequency">
+                  <property name="decimals">
+                   <number>10</number>
+                  </property>
+                  <property name="maximum">
+                   <double>1000000.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QRadioButton" name="radioPeriod">
+                  <property name="text">
+                   <string>Period</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
@@ -1716,7 +1760,7 @@
                <property name="title">
                 <string>Pulse level</string>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_8">
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
                 <item>
                  <widget class="QSlider" name="horizontalSlider_Pluse_Level">
                   <property name="sizePolicy">
@@ -1725,8 +1769,51 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="mouseTracking">
+                   <bool>true</bool>
+                  </property>
+                  <property name="tabletTracking">
+                   <bool>false</bool>
+                  </property>
+                  <property name="minimum">
+                   <number>5</number>
+                  </property>
+                  <property name="maximum">
+                   <number>50</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1</number>
+                  </property>
+                  <property name="pageStep">
+                   <number>1</number>
+                  </property>
+                  <property name="value">
+                   <number>5</number>
+                  </property>
                   <property name="orientation">
                    <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TickPosition::TicksAbove</enum>
+                  </property>
+                  <property name="tickInterval">
+                   <number>1</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="pulse_level_value">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="contextMenuPolicy">
+                   <enum>Qt::ContextMenuPolicy::PreventContextMenu</enum>
+                  </property>
+                  <property name="text">
+                   <string>50V</string>
                   </property>
                  </widget>
                 </item>
@@ -1760,11 +1847,15 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_PulseCounter"/>
-                </item>
                 <item row="2" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_Timer"/>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_Timer">
+                  <property name="decimals">
+                   <number>10</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QSpinBox" name="SpinBox_PulseCounter"/>
                 </item>
                </layout>
               </widget>
@@ -1776,7 +1867,17 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_12">
                 <item>
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_TriggerDelay"/>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_TriggerDelay">
+                  <property name="suffix">
+                   <string>ns</string>
+                  </property>
+                  <property name="decimals">
+                   <number>4</number>
+                  </property>
+                  <property name="maximum">
+                   <double>100000000.000000000000000</double>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
@@ -1829,7 +1930,7 @@
         <string>Results_emission</string>
        </property>
        <attribute name="title">
-        <string>Attack Results</string>
+        <string>Attack Settings</string>
        </attribute>
        <attribute name="toolTip">
         <string>Visualisation des résultats</string>
@@ -1838,14 +1939,73 @@
         <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox_9">
           <property name="title">
-           <string>Sauvegarde émission</string>
+           <string>Settings</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
            <item>
-            <widget class="QPushButton" name="pushButton_4">
-             <property name="text">
-              <string>Select output directory</string>
+            <widget class="QGroupBox" name="groupBox_13">
+             <property name="title">
+              <string>Target board connection</string>
              </property>
+             <layout class="QVBoxLayout" name="verticalLayout_9">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_12">
+                <item>
+                 <widget class="QComboBox" name="comboBox_2">
+                  <property name="placeholderText">
+                   <string>Device</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="lineEdit">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="placeholderText">
+                   <string>Address...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="boardHelpButton_2">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>❔</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton">
+                <property name="text">
+                 <string>Connect</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_14">
+             <property name="title">
+              <string>Output</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <item>
+               <widget class="QPushButton" name="pushButton_4">
+                <property name="text">
+                 <string>Select output directory</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -1869,14 +2029,55 @@
         </item>
         <item row="0" column="1">
          <widget class="QGroupBox" name="groupBox_11">
-          <property name="title">
-           <string>Analyse </string>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <property name="title">
+           <string>Board program</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_15">
            <item>
-            <widget class="QRadioButton" name="radioButton_8">
-             <property name="text">
-              <string>RadioButton</string>
+            <widget class="QFrame" name="frame">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Shape::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Shadow::Raised</enum>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_11">
+              <item>
+               <widget class="QPushButton" name="pushButton_5">
+                <property name="text">
+                 <string>Refresh Settings</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_6">
+                <property name="text">
+                 <string>Apply settings</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPlainTextEdit" name="plainTextEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
             </widget>
            </item>
