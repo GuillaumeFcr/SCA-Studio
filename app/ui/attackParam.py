@@ -75,6 +75,10 @@ class AttackParamUi:
         # 7. Bouton Save / Action
         self.ui.pushButton_SaveEmit.clicked.connect(self.on_save_view_clicked)
 
+        #8. boutton send a test to injector
+
+        self.ui.pushButton_testPulse.clicked.connect(self.on_send_test_pulse_clicked)
+
 
 
                 # --- RECUPERATION DES VALEURS ---
@@ -88,6 +92,21 @@ class AttackParamUi:
         self.is_counter_timer = None  # 2 pour counter, 3 pour Timer, False pour Désactivé
         self.counter_timer_value = None  # Valeur du compteur ou timer
         self.delay = self.ui.doubleSpinBox_TriggerDelay.value()
+
+        self.command_is_valid = False #
+
+    def command_validity(self):
+        # Vérifie si tous les paramètres nécessaires sont définis
+        #Indique si la configuration actuelle est valide pour être envoyée à l'injecteur (tous les paramètres nécessaires sont définis)
+        if (self.is_pulse is not None and
+            self.freq is not None and
+            self.level is not None and
+            self.is_counter_timer is not None and
+            self.counter_timer_value is not None and
+            (self.is_pulse or (self.pulse_per_burst is not None and self.burst_period is not None))):
+            return True
+        else:
+            return False
 
     # --- Définition des fonctions (Slots) ---
 
@@ -199,12 +218,7 @@ class AttackParamUi:
             self.pulse_per_burst, self.burst_period,
             self.is_counter_timer, self.counter_timer_value, self.delay)
 
-        if (self.is_pulse is None or
-            self.freq is None or
-            self.level is None or
-            self.is_counter_timer is None or
-            self.counter_timer_value is None or
-            (not self.is_pulse and (self.pulse_per_burst is None or self.burst_period is None))):
+        if self.command_validity() == False:
             print("Veuillez configurer tous les paramètres avant de sauvegarder.")
             return
 
@@ -215,8 +229,6 @@ class AttackParamUi:
                 self.ui.graphicsView.setScene(self.scene)
 
             print("Mise à jour de la prévisualisation...")
-
-            # --- CRÉATION DU PLOT MATPLOTLIB ---
 
             # --- CRÉATION DU PLOT MATPLOTLIB ---
 
@@ -301,26 +313,6 @@ class AttackParamUi:
 
             ax.grid(True)
             fig.tight_layout()
-            # # --- CRÉATION DU PLOT MATPLOTLIB ---
-            # # On crée une figure (ajustez figsize pour que ça rentre bien)
-            # fig, ax = plt.subplots(figsize=(5, 3), dpi=80)
-
-            # # Simulation d'un signal simple (Square wave)
-            # # On définit une échelle de temps (ex: 2 cycles)
-            # t_max = (1/self.freq) * 2 if self.freq > 0 else 0.1
-            # t = np.linspace(0, t_max, 500)
-
-            # # Logique de dessin : un créneau qui commence après le delay
-            # # (Conversion arbitraire du délai pour l'exemple)
-            # start_time = self.delay / 1000
-            # signal = np.where((t > start_time) & (t < start_time + t_max/4), self.level, 0)
-
-            # ax.plot(t, signal, 'r-', lw=2)
-            # ax.set_title(f"Preview: {'Pulse' if self.is_pulse else 'Burst'}")
-            # ax.set_xlabel("Temps (s)")
-            # ax.set_ylabel("Amplitude")
-            # ax.grid(True)
-            # fig.tight_layout()
 
             # --- AFFICHAGE DANS QT ---
             # On transforme la figure en widget
@@ -335,3 +327,18 @@ class AttackParamUi:
 
             # Important : Fermer la figure matplotlib pour libérer la mémoire RAM
             plt.close(fig)
+
+    @handle("Envoi d'un signal de test à l'injecteur")
+    def on_send_test_pulse_clicked(self):
+
+        if self.command_validity() == False:
+            print("Veuillez configurer tous les paramètres avant d'envoyer un signal de test.")
+            return
+
+        else :
+
+            #Pense à mettre un timer de 5secondes dans cette emission pour faire le test
+
+            print("Envoi d'un signal de test à l'injecteur avec les paramètres suivants :")
+            print(self.is_pulse, self.freq, self.level, self.delay, self.is_counter_timer, self.counter_timer_value)
+            return

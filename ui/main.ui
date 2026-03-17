@@ -86,7 +86,7 @@
        <enum>QTabWidget::TabShape::Triangular</enum>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>4</number>
       </property>
       <property name="elideMode">
        <enum>Qt::TextElideMode::ElideNone</enum>
@@ -1920,12 +1920,36 @@
              </property>
             </widget>
            </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_13">
+             <item>
+              <widget class="QPushButton" name="pushButton_testPulse">
+               <property name="text">
+                <string>Send a test pulse </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>A timer is automatically set to 5s </string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
           </layout>
          </widget>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="ResultTab">
+      <widget class="QWidget" name="AttackTab">
        <property name="accessibleName">
         <string>Results_emission</string>
        </property>
@@ -1951,14 +1975,14 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_12">
                 <item>
-                 <widget class="QComboBox" name="comboBox_2">
+                 <widget class="QComboBox" name="comboBox_Board">
                   <property name="placeholderText">
                    <string>Device</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit">
+                 <widget class="QLineEdit" name="lineEdit_address_board">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1983,7 +2007,7 @@
                </layout>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="pushButton_connect_board">
                 <property name="text">
                  <string>Connect</string>
                 </property>
@@ -1999,7 +2023,7 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_14">
               <item>
-               <widget class="QPushButton" name="pushButton_4">
+               <widget class="QPushButton" name="pushButton_outputDirectory">
                 <property name="text">
                  <string>Select output directory</string>
                 </property>
@@ -2055,14 +2079,14 @@
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_11">
               <item>
-               <widget class="QPushButton" name="pushButton_5">
+               <widget class="QPushButton" name="pushButton_boardGetSettings">
                 <property name="text">
                  <string>Refresh Settings</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_6">
+               <widget class="QPushButton" name="pushButton_boardSetSettings">
                 <property name="text">
                  <string>Apply settings</string>
                 </property>
@@ -2072,7 +2096,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPlainTextEdit" name="plainTextEdit">
+            <widget class="QPlainTextEdit" name="plainTextEdit_board_settings">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                <horstretch>0</horstretch>
