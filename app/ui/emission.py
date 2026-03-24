@@ -3,7 +3,13 @@ from enum import Enum
 import numpy as np
 from PySide6 import QtGui
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QGraphicsPixmapItem, QGraphicsScene, QGraphicsView, QMessageBox
+from PySide6.QtWidgets import (
+    QApplication,
+    QGraphicsPixmapItem,
+    QGraphicsScene,
+    QGraphicsView,
+    QMessageBox,
+)
 
 from app.utils.devices import get_available_devices
 from app.utils.drawing import (
@@ -40,14 +46,17 @@ class EmissionUi:
 
         self.ui.frequencyRadio.toggled.connect(self.on_frequencyRadio_toggled)
         self.ui.frequencySpinBox.valueChanged.connect(self.on_frequencySpinBox_changed)
-        self.ui.frequencySlider.valueChanged.connect(self.on_frequencySlider_changed)
 
-        self.ui.pulseLevelSpinBox.valueChanged.connect(self.on_pulseLevelSpinBox_changed)
+        self.ui.pulseLevelSpinBox.valueChanged.connect(
+            self.on_pulseLevelSpinBox_changed
+        )
         self.ui.pulseLevelSlider.valueChanged.connect(self.on_pulseLevelSlider_changed)
 
         self.ui.disableCounterRadio.toggled.connect(self.on_disableCounterRadio_toggled)
         self.ui.pulseCounterRadio.toggled.connect(self.on_pulseCounterRadio_toggled)
-        self.ui.pulseCounterSpinBox.valueChanged.connect(self.on_pulseCounterSpinBox_changed)
+        self.ui.pulseCounterSpinBox.valueChanged.connect(
+            self.on_pulseCounterSpinBox_changed
+        )
         self.ui.timerRadio.toggled.connect(self.on_timerRadio_toggled)
         self.ui.timerEdit.timeChanged.connect(self.on_timerEdit_changed)
 
@@ -57,23 +66,25 @@ class EmissionUi:
         self.ui.singlePulseButton.clicked.connect(self.on_singlePulseButton_click)
 
     def on_pulseModeRadio_toggled(self, checked):
-        self.devices.injector.set_pulse_burst_mode(1-self.devices.injector.get_pulse_burst_mode())
+        self.devices.injector.set_pulse_burst_mode(
+            1 - self.devices.injector.get_pulse_burst_mode()
+        )
 
     def on_frequencyRadio_toggled(self, checked):
-        val=1/val #a verifier
-
+        pass
 
     def on_frequencySpinBox_changed(self, val):
-        pass
-
-    def on_frequencySlider_changed(self, val):
-        pass
+        if self.ui.frequencyRadio.checked:
+            self.devices.injector.set_burst_period(1 / val)
+        else:
+            self.devices.injector.set_burst_period(val)
 
     def on_pulseLevelSpinBox_changed(self, val):
         pass
 
     def on_pulseLevelSlider_changed(self, val):
-        self.devices.injector.set_pulse_level_index(val) #a changer
+        pass
+        self.devices.injector.set_pulse_level_index(val)  # a changer
 
     def on_disableCounterRadio_toggled(self, checked):
         if checked:
@@ -91,7 +102,8 @@ class EmissionUi:
             self.devices.injector.set_counter_mode(2)
 
     def on_timerEdit_changed(self, time):
-        self.devices.injector.set_timer(time) #a verifier
+        pass
+        self.devices.injector.set_timer(time)  # a verifier
 
     def on_triggerDelayEdit_changed(self, text):
         self.devices.injector.set_trigger_delay(int(text))
@@ -105,5 +117,3 @@ class EmissionUi:
     def on_singlePulseButton_click(self):
         self.devices.injector.set_control(2)
         self.devices.injector.send_injection()
-
-
