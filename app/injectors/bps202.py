@@ -1,0 +1,179 @@
+from ctypes import cdll
+from app.utils.logging import device_logger
+
+lib = cdll.LoadLibrary("Install 1.9.20/bps202.dll")
+
+
+class Injector:
+    name = "bps202"
+
+    def __init__(self):
+        self._alternate = 0
+        self._burst_period = 10
+        self._pulse_burst_counter = 0
+        self._counter_mode = 0
+        self._pulse_range_index = 0
+        self._pulse_level_index = 0
+        self._pulse_polarity = 0
+        self._pulse_burst_mode = 0
+        self._pulse_period = 1000
+        self._pulses_per_burst = 10
+        self._trigger_config_mode = [0, 1, 0, 0]
+        self._trigger_delay = 10
+        self._low_jitter_trigger_delay = 0
+        self._control = 1
+
+    def get_status(self):
+        a = lib.bps_get_status()
+        if a == -2:
+            return "Error"
+        if a == -1:
+            return "Not connected"
+        if a == 0:
+            return "Connected, awaiting input..."
+        if a == 1:
+            return "Sending single pulse..."
+        if a == 2:
+            return "Sending pulses..."
+        if a == 3:
+            return "Waiting for trigger..."
+
+    @device_logger
+    def connect(self):
+        lib.bps_init()
+        while lib.bps_get_status() < 0:
+            pass
+
+    @device_logger
+    def disconnect(self):
+        lib.bps_close()
+
+    @device_logger
+    def set_control(self, control):
+        if control in [1, 2]:
+            self._control = control
+
+    @device_logger
+    def get_alternate(self):
+        return self._alternate
+
+    @device_logger
+    def set_alternate(self, value):
+        self._alternate = value
+
+    @device_logger
+    def get_burst_period(self):
+        return self._burst_period
+
+    @device_logger
+    def set_burst_period(self, value):
+        self._burst_period = value
+
+    @device_logger
+    def get_pulse_burst_counter(self):
+        return self._pulse_counter
+
+    @device_logger
+    def set_pulse_burst_counter(self, value):
+        self._pulse_counter = value
+
+    @device_logger
+    def get_counter_mode(self):
+        return self._counter_mode
+
+    @device_logger
+    def set_counter_mode(self, value):
+        self._counter_mode = value
+
+    @device_logger
+    def get_pulse_range_index(self):
+        return self._pulse_range_index
+
+    @device_logger
+    def set_pulse_range_index(self, value):
+        self._pulse_range_index = value
+
+    @device_logger
+    def get_pulse_level(self):
+        return 10 * (self._pulse_level_index + 5)
+
+    @device_logger
+    def set_pulse_level(self, value):
+        self._pulse_level_index = (
+            value // 10 - 5
+        )  # value is 50 for index 0 and increments by 10 for each index
+
+    @device_logger
+    def get_pulse_polarity(self):
+        return self._pulse_polarity
+
+    @device_logger
+    def set_pulse_polarity(self, value):
+        self._pulse_polarity = value
+
+    @device_logger
+    def get_pulse_burst_mode(self):
+        return self._pulse_burst_mode
+
+    @device_logger
+    def set_pulse_burst_mode(self, value):
+        self._pulse_burst_mode = value
+
+    @device_logger
+    def get_pulse_period(self):
+        return self._pulse_period
+
+    @device_logger
+    def set_pulse_frequency(self, value):
+        self._pulse_period = 1 / value
+
+    @device_logger
+    def get_pulses_per_burst(self):
+        return self._pulses_per_burst
+
+    @device_logger
+    def set_pulses_per_burst(self, value):
+        self._pulses_per_burst = value
+
+    @device_logger
+    def get_trigger_config_mode(self):
+        return self._trigger_config_mode
+
+    @device_logger
+    def set_trigger_config_mode(self, value):
+        self._trigger_config_mode = value
+
+    @device_logger
+    def get_trigger_delay(self):
+        return self._trigger_delay
+
+    @device_logger
+    def set_trigger_delay(self, value):
+        self._trigger_delay = value
+
+    @device_logger
+    def get_control(self):
+        return self._control
+
+    @device_logger
+    def send_injection(self):
+        lib.bps_set_pulse_period_10ns(int(self._pulse_period * 1e8))
+        lib.bps_set_pulse_level_index(self._pulse_level_index)
+        lib.bps_set_pulse_burst_mode(self._pulse_burst_mode)
+        if self._pulse_burst_mode == 1:
+            lib.bps_set_pulses_per_burst(self._pulses_per_burst)
+            if self._counter_mode == 1:
+                lib.bps_set_burst_counter_init(self._pulse_burst_counter)
+        else:
+            if self._counter_mode == 1:
+                lib.bps_set_pulse_counter_init(self._pulse_burst_counter)
+        if self._counter_mode == 2:
+            lib.bps_set_timer_init_ms(int(self._pulse_burst_counter / 1e9))
+        lib.bps_control(self._control)
+        if self._control == 1:
+            while lib.bps_get_status() < 1:
+                pass
+            # measure....
+        # lib.bps_control(0)
+        while lib.bps_get_status() > 0:
+            pass
