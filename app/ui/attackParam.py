@@ -94,7 +94,8 @@ class AttackParamUi:
         self.freq = None
         self.level = None
         self.is_counter_timer = None  # 1 pour counter, 2 pour Timer, 0 pour Désactivé
-        self.counter_timer_value = None  # Valeur du compteur ou timer
+        self.counter_value = None
+        self.timer_value = None
         self.delay = self.ui.doubleSpinBox_TriggerDelay.value()
         self.command_sent = False
         self.connected = False
@@ -107,7 +108,8 @@ class AttackParamUi:
             and self.freq is not None
             and self.level is not None
             and self.is_counter_timer is not None
-            and self.counter_timer_value is not None
+            and self.counter_value is not None
+            and self.timer_value is not None
             and (
                 self.is_pulse
                 or (self.pulses_per_burst is not None and self.burst_period is not None)
@@ -203,25 +205,28 @@ class AttackParamUi:
         self.command_sent = False
         if self.ui.radioDisableCounter.isChecked():
             self.is_counter_timer = False
-            self.counter_timer_value = 0  # par sécurité
+            self.counter_value = 0  # par sécurité
+            self.timer_value = 0
             print("Compteur désactivé")
         elif self.ui.radioPulseCounter.isChecked():
             self.is_counter_timer = 1
-            self.counter_timer_value = self.ui.SpinBox_PulseCounter.value()
+            self.counter_value = self.ui.SpinBox_PulseCounter.value()
+            self.timer_value = 0
             print("Mode Compteur de pulses activé")
         elif self.ui.radioTimer.isChecked():
             self.is_counter_timer = 2
-            self.counter_timer_value = self.ui.doubleSpinBox_Timer.value()
+            self.timer_value = self.ui.doubleSpinBox_Timer.value()
+            self.counter_value = 0
             print("Mode Timer activé")
 
     @handle("Modification Valeur Compteur")
     def on_pulse_counter_val_changed(self, val):
-        self.counter_timer_value = val
+        self.counter_value = val
         self.command_sent = False
 
     @handle("Modification Valeur Timer")
     def on_timer_val_changed(self, val):
-        self.counter_timer_value = val
+        self.timer_value = val
         self.command_sent = False
 
     @handle("Modification Trigger Delay")
@@ -240,7 +245,8 @@ class AttackParamUi:
             self.pulses_per_burst,
             self.burst_period,
             self.is_counter_timer,
-            self.counter_timer_value,
+            self.counter_value,
+            self.timer_value,
             self.delay,
         )
 
@@ -256,7 +262,8 @@ class AttackParamUi:
                 self.devices.injector.set_pulses_per_burst(self.pulses_per_burst)
                 self.devices.injector.set_burst_period(self.burst_period)
                 self.devices.injector.set_counter_mode(self.is_counter_timer)
-                self.devices.injector.set_pulse_burst_counter(self.counter_timer_value)
+                self.devices.injector.set_pulse_burst_counter(self.counter_value)
+                self.devices.injector.set_timer(self.timer_value)
                 self.devices.injector.set_trigger_delay(self.delay)
                 self.command_sent = True
 
@@ -285,7 +292,7 @@ class AttackParamUi:
                 base_duration = 2 * self.burst_period
 
             if self.is_counter_timer == 2:  # Timer actif
-                t_max = start_time + self.counter_timer_value
+                t_max = start_time + self.timer_value
             else:
                 t_max = base_duration
 
@@ -299,7 +306,7 @@ class AttackParamUi:
 
                 # pulse counter
                 if self.is_counter_timer == 1:
-                    pulse_times = pulse_times[: self.counter_timer_value]
+                    pulse_times = pulse_times[: self.counter_value]
 
             else:
                 # génération des bursts
@@ -307,7 +314,7 @@ class AttackParamUi:
 
                 # burst counter
                 if self.is_counter_timer == 1:
-                    burst_times = burst_times[: self.counter_timer_value]
+                    burst_times = burst_times[: self.counter_value]
 
                 pulse_times = []
 
@@ -378,7 +385,8 @@ class AttackParamUi:
                 self.level,
                 self.delay,
                 self.is_counter_timer,
-                self.counter_timer_value,
+                self.counter_value,
+                self.timer_value,
             )
             self.devices.injector.send_injection()
             return

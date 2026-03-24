@@ -11,6 +11,7 @@ class Injector:
         self._alternate = 0
         self._burst_period = 10
         self._pulse_burst_counter = 0
+        self._timer = 0
         self._counter_mode = 0
         self._pulse_range_index = 0
         self._pulse_level_index = 0
@@ -71,11 +72,19 @@ class Injector:
 
     @device_logger
     def get_pulse_burst_counter(self):
-        return self._pulse_counter
+        return self._pulse_burst_counter
 
     @device_logger
     def set_pulse_burst_counter(self, value):
-        self._pulse_counter = value
+        self._pulse_burst_counter = value
+
+    @device_logger
+    def get_timer(self):
+        return self._timer
+
+    @device_logger
+    def set_timer(self, value):
+        self._timer = int(1e3 * value)  # Because bps202 uses ms timer
 
     @device_logger
     def get_counter_mode(self):
@@ -160,20 +169,28 @@ class Injector:
         lib.bps_set_pulse_period_10ns(int(self._pulse_period * 1e8))
         lib.bps_set_pulse_level_index(self._pulse_level_index)
         lib.bps_set_pulse_burst_mode(self._pulse_burst_mode)
+        lib.bps_set_counter_mode(0)
         if self._pulse_burst_mode == 1:
             lib.bps_set_pulses_per_burst(self._pulses_per_burst)
             if self._counter_mode == 1:
+                lib.bps_set_counter_mode(1)
                 lib.bps_set_burst_counter_init(self._pulse_burst_counter)
         else:
             if self._counter_mode == 1:
+                lib.bps_set_counter_mode(1)
                 lib.bps_set_pulse_counter_init(self._pulse_burst_counter)
         if self._counter_mode == 2:
-            lib.bps_set_timer_init_ms(int(self._pulse_burst_counter / 1e9))
+            lib.bps_set_counter_mode(2)
+            lib.bps_set_timer_init_ms(int(self._timer))
+        print(lib.bps_get_timer_init_ms())
+        print(lib.bps_get_timer_ms())
         lib.bps_control(self._control)
         if self._control == 1:
             while lib.bps_get_status() < 1:
                 pass
-            # measure....
-        # lib.bps_control(0)
+            print("coucou")
+
+    def stop_injection(self):
+        lib.bps_control(0)
         while lib.bps_get_status() > 0:
             pass
