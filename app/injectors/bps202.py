@@ -168,12 +168,12 @@ class Injector:
             if self._counter_mode == 1:
                 lib.bps_set_pulse_counter_init(self._pulse_burst_counter)
         if self._counter_mode == 2:
-            lib.bps_set_timer_init_ms(self._pulse_burst_counter / 1e9)
+            lib.bps_set_timer_init_ms(int(self._pulse_burst_counter / 1e9))
         lib.bps_control(self._control)
         if self._control == 1:
             while lib.bps_get_status() < 1:
                 pass
             # measure....
-        lib.bps_control(0)
+        # lib.bps_control(0)
         while lib.bps_get_status() > 0:
             pass

@@ -71,7 +71,7 @@ class AttackParamUi:
         self.ui.radioPulseCounter.toggled.connect(self.on_counter_mode_changed)
         self.ui.radioTimer.toggled.connect(self.on_counter_mode_changed)
 
-        self.ui.doubleSpinBox_PulseCounter.valueChanged.connect(
+        self.ui.SpinBox_PulseCounter.valueChanged.connect(
             self.on_pulse_counter_val_changed
         )
         self.ui.doubleSpinBox_Timer.valueChanged.connect(self.on_timer_val_changed)
@@ -83,6 +83,7 @@ class AttackParamUi:
 
         # 7. Bouton Save / Action
         self.ui.pushButton_SaveEmit.clicked.connect(self.on_save_view_clicked)
+        self.ui.pushButton_testPulse.clicked.connect(self.on_send_test_pulse_clicked)
 
         # --- RECUPERATION DES VALEURS ---
         # On utilise .value() pour les SpinBox et .isChecked() pour les Radio
@@ -283,7 +284,7 @@ class AttackParamUi:
             else:
                 base_duration = 2 * self.burst_period
 
-            if self.is_counter_timer == 3:  # Timer actif
+            if self.is_counter_timer == 2:  # Timer actif
                 t_max = start_time + self.counter_timer_value
             else:
                 t_max = base_duration
@@ -297,7 +298,7 @@ class AttackParamUi:
                 pulse_times = np.arange(start_time, t_max, pulse_period)
 
                 # pulse counter
-                if self.is_counter_timer == 2:
+                if self.is_counter_timer == 1:
                     pulse_times = pulse_times[: self.counter_timer_value]
 
             else:
@@ -305,7 +306,7 @@ class AttackParamUi:
                 burst_times = np.arange(start_time, t_max, self.burst_period)
 
                 # burst counter
-                if self.is_counter_timer == 2:
+                if self.is_counter_timer == 1:
                     burst_times = burst_times[: self.counter_timer_value]
 
                 pulse_times = []
