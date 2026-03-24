@@ -208,6 +208,8 @@ class AttackParamUi:
             self.counter_timer_value = self.ui.doubleSpinBox_Timer.value()
             print("Mode Timer activé")
             self.devices.injector.set_counter_mode(2)
+            self.devices.injector.set_control(2)
+            self.devices.injector.send_injection()
 
     @handle("Modification Valeur Compteur")
     def on_pulse_counter_val_changed(self, val):
