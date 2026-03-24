@@ -22,7 +22,21 @@ class Injector:
         self._trigger_delay = 10
         self._low_jitter_trigger_delay = 0
         self._control = 1
-        self.connect()
+
+    def get_status(self):
+        a = lib.bps_get_status()
+        if a == -2:
+            return "Error"
+        if a == -1:
+            return "Not connected"
+        if a == 0:
+            return "Connected, awaiting input..."
+        if a == 1:
+            return "Sending single pulse..."
+        if a == 2:
+            return "Sending pulses..."
+        if a == 3:
+            return "Waiting for trigger..."
 
     @device_logger
     def connect(self):

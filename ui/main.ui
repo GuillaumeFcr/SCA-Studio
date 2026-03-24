@@ -1628,7 +1628,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_8">
                <item>
-                <widget class="QComboBox" name="comboBox">
+                <widget class="QComboBox" name="injectorComboBox">
                  <property name="placeholderText">
                   <string>Device</string>
                  </property>
