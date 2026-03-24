@@ -115,7 +115,7 @@ class AttackParamUi:
         self.devices.injector = self.injector_devices[i]()
 
     @handle("Connexion à l'injecteur")
-    def on_connect_clicked(self, i):
+    def on_connect_clicked(self):
         print("Tentative de connexion à l'injecteur")
         self.devices.injector.connect()
 
@@ -171,7 +171,7 @@ class AttackParamUi:
             self.freq = 1 / val if val != 0 else 0
 
         print(f"Nouvelle valeur temporelle : {val}")
-        if self.ui.radioFrequency.checked:
+        if self.ui.radioFrequency.isChecked():
             self.devices.injector.set_burst_period(1 / val)
         else:
             self.devices.injector.set_burst_period(val)
