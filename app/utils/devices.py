@@ -6,6 +6,7 @@ DEVICES_TYPES = {
     "cameras": "Camera",
     "oscilloscopes": "Oscilloscope",
     "positioning": "Positioning",
+    "injectors": "Injector",
 }
 
 
@@ -31,6 +32,7 @@ def get_available_devices(type: str) -> list:
 class Devices:
     """List of devices and other objects shared by all tabs"""
 
+    injector = None
     camera = None
     positioning = None
     oscilloscope = None

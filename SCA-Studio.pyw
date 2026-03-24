@@ -11,7 +11,8 @@ from app.ui.menubar import MenubarUi
 from app.ui.positioning import PositioningUi
 from app.ui.oscilloscope import OscilloscopeUi
 from app.ui.acquisition import AcquisitionUi
-from app.ui.emission import EmissionUi
+from app.ui.attackParam import AttackParamUi
+from app.ui.attackLaunch import AttackUi
 from app.utils.devices import Devices
 
 
@@ -47,8 +48,9 @@ if __name__ == "__main__":
     positioning = PositioningUi(window, devices)
     oscilloscope = OscilloscopeUi(window, devices)
     acquisition = AcquisitionUi(window, devices)
-    emission = EmissionUi(window, devices)
+    attackParam = AttackParamUi(window, devices)
+    attackLaunch = AttackUi(window, devices)
 
     # Run the app
-    window.show()
+    window.showMaximized()
     sys.exit(app.exec())
