@@ -6,11 +6,11 @@ lib = cdll.LoadLibrary("Install 1.9.20/bps202.dll")
 
 class Injector:
     name = "bps202"
+
     def __init__(self):
         self._alternate = 0
         self._burst_period = 10
-        self._pulse_counter = 0
-        self._burst_counter = 0
+        self._pulse_burst_counter = 0
         self._counter_mode = 0
         self._pulse_range_index = 0
         self._pulse_level_index = 0
@@ -43,7 +43,6 @@ class Injector:
         lib.bps_init()
         while lib.bps_get_status() < 0:
             pass
-        self._pulse_levels = lib.bps_get_pulse_levels()
 
     @device_logger
     def disconnect(self):
@@ -71,20 +70,12 @@ class Injector:
         self._burst_period = value
 
     @device_logger
-    def get_pulse_counter(self):
+    def get_pulse_burst_counter(self):
         return self._pulse_counter
 
     @device_logger
-    def set_pulse_counter(self, value):
+    def set_pulse_burst_counter(self, value):
         self._pulse_counter = value
-
-    @device_logger
-    def get_burst_counter(self):
-        return self._burst_counter
-
-    @device_logger
-    def set_burst_counter(self, value):
-        self._burst_counter = value
 
     @device_logger
     def get_counter_mode(self):
@@ -103,12 +94,14 @@ class Injector:
         self._pulse_range_index = value
 
     @device_logger
-    def get_pulse_level_index(self):
-        return self._pulse_level_index
+    def get_pulse_level(self):
+        return 10 * (self._pulse_level_index + 5)
 
     @device_logger
-    def set_pulse_level_index(self, value):
-        self._pulse_level_index = value
+    def set_pulse_level(self, value):
+        self._pulse_level_index = (
+            value // 10 - 5
+        )  # value is 50 for index 0 and increments by 10 for each index
 
     @device_logger
     def get_pulse_polarity(self):
@@ -131,8 +124,8 @@ class Injector:
         return self._pulse_period
 
     @device_logger
-    def set_pulse_period(self, value):
-        self._pulse_period = value
+    def set_pulse_frequency(self, value):
+        self._pulse_period = 1 / value
 
     @device_logger
     def get_pulses_per_burst(self):
@@ -159,19 +152,23 @@ class Injector:
         self._trigger_delay = value
 
     @device_logger
-    def get_low_jitter_trigger_delay(self):
-        return self._low_jitter_trigger_delay
-
-    @device_logger
-    def set_low_jitter_trigger_delay(self, value):
-        self._low_jitter_trigger_delay = value
-
-    @device_logger
     def get_control(self):
         return self._control
 
     @device_logger
     def send_injection(self):
+        lib.bps_set_pulse_period_10ns(int(self._pulse_period * 1e8))
+        lib.bps_set_pulse_level_index(self._pulse_level_index)
+        lib.bps_set_pulse_burst_mode(self._pulse_burst_mode)
+        if self._pulse_burst_mode == 1:
+            lib.bps_set_pulses_per_burst(self._pulses_per_burst)
+            if self._counter_mode == 1:
+                lib.bps_set_burst_counter_init(self._pulse_burst_counter)
+        else:
+            if self._counter_mode == 1:
+                lib.bps_set_pulse_counter_init(self._pulse_burst_counter)
+        if self._counter_mode == 2:
+            lib.bps_set_timer_init_ms(self._pulse_burst_counter / 1e9)
         lib.bps_control(self._control)
         if self._control == 1:
             while lib.bps_get_status() < 1:
