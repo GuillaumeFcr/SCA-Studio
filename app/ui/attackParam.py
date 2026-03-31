@@ -375,6 +375,11 @@ class AttackParamUi:
 
         else:
             # Pense à mettre un timer de 5secondes dans cette emission pour faire le test
+            time=False
+            if self.is_counter_timer == 0:
+                time=True
+                self.devices.injector.set_counter_mode(1)
+                self.devices.injector.set_timer(5)
 
             print(
                 "Envoi d'un signal de test à l'injecteur avec les paramètres suivants :"
@@ -389,4 +394,7 @@ class AttackParamUi:
                 self.timer_value,
             )
             self.devices.injector.send_injection()
+            if time:
+                self.devices.injector.set_counter_mode(0)
+                self.devices.injector.set_timer(0)
             return
