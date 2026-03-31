@@ -23,6 +23,7 @@ class Injector:
         self._trigger_delay = 10
         self._low_jitter_trigger_delay = 0
         self._control = 1
+        self._attackReady = False
 
     def get_status(self):
         a = lib.bps_get_status()
@@ -165,6 +166,14 @@ class Injector:
         return self._control
 
     @device_logger
+    def set_attackReady(self, value):
+        self._attackReady = value
+
+    @device_logger
+    def get_attackReady(self):
+        return self._attackReady
+
+    @device_logger
     def send_injection(self):
         lib.bps_set_pulse_period_10ns(int(self._pulse_period * 1e8))
         lib.bps_set_pulse_level_index(self._pulse_level_index)
@@ -172,6 +181,7 @@ class Injector:
         lib.bps_set_counter_mode(0)
         if self._pulse_burst_mode == 1:
             lib.bps_set_pulses_per_burst(self._pulses_per_burst)
+            lib.bps_set_burst_period_ms(int(self._burst_period * 1e3))
             if self._counter_mode == 1:
                 lib.bps_set_counter_mode(1)
                 lib.bps_set_burst_counter_init(self._pulse_burst_counter)
@@ -182,13 +192,10 @@ class Injector:
         if self._counter_mode == 2:
             lib.bps_set_counter_mode(2)
             lib.bps_set_timer_init_ms(int(self._timer))
-        print(lib.bps_get_timer_init_ms())
-        print(lib.bps_get_timer_ms())
         lib.bps_control(self._control)
         if self._control == 1:
             while lib.bps_get_status() < 1:
                 pass
-            print("coucou")
 
     def stop_injection(self):
         lib.bps_control(0)

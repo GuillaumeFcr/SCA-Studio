@@ -266,6 +266,7 @@ class AttackParamUi:
                 self.devices.injector.set_timer(self.timer_value)
                 self.devices.injector.set_trigger_delay(self.delay)
                 self.command_sent = True
+                self.devices.injector.set_attackReady(True)
 
             # Sécurité : vérifier si la scène existe
             if not hasattr(self, "scene"):
