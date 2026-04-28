@@ -19,6 +19,8 @@ from app.utils.logging import handle
 ViewMode = Enum("ViewMode", ["DRAG", "BOUNDARIES", "AREA_OF_INTEREST", "MOVE_TO_POINT"])
 
 
+
+
 class AttackParamUi:
     def __init__(self, ui, devices):
         self.ui = ui
@@ -44,6 +46,9 @@ class AttackParamUi:
         self.ui.pushButton_3.clicked.connect(
             self.on_check_status_clicked
         )  # Bouton "Check Status"
+        self.ui.pushButton_deconnect.clicked.connect(
+            self.on_disconnect_clicked
+        )  # Bouton "Disconnect"
         self.ui.injectorComboBox.currentIndexChanged.connect(
             self.on_injectorComboBox_change
         )
@@ -100,6 +105,13 @@ class AttackParamUi:
         self.command_sent = False
         self.connected = False
 
+
+        self.PULSE_PERIOD_MIN = 50e-6      # 50 µs
+        self.PULSE_PERIOD_MAX = 10         # 10 s
+
+        self.BURST_PERIOD_MIN = 50e-3      # 50 ms
+        self.BURST_PERIOD_MAX = 10         # 10 s
+
     def command_validity(self):
         # Vérifie si tous les paramètres nécessaires sont définis
         # Indique si la configuration actuelle est valide pour être envoyée à l'injecteur (tous les paramètres nécessaires sont définis)
@@ -132,6 +144,41 @@ class AttackParamUi:
         self.devices.injector.connect()
         self.connected = True
 
+    @handle("Déconnexion de l'injecteur")
+    def on_disconnect_clicked(self):
+        if self.connected:
+            self.devices.injector.disconnect()  #a implémenter dans les classes d'injecteurs
+            self.connected = False
+            self.command_sent = False
+            print("Injecteur déconnecté")
+        else:
+            print("Aucun injecteur connecté")
+            QMessageBox.warning(
+        self.ui,
+        "Injector not connected",
+        "You must connect to an injector before trying to disconnect."
+    )
+
+
+    def clamp_with_warning(self, value, vmin, vmax, name):
+        if value < vmin:
+            QMessageBox.warning(
+                self.ui,
+                "Valeur trop faible",
+                f"{name} trop faible.\nMin autorisé : {vmin} s"
+            )
+            return vmin
+
+        if value > vmax:
+            QMessageBox.warning(
+                self.ui,
+                "Valeur trop élevée",
+                f"{name} trop élevée.\nMax autorisé : {vmax} s"
+            )
+            return vmax
+
+        return value
+
     @handle("Vérification du statut")
     def on_check_status_clicked(self):
         print("Vérification du statut du matériel...")
@@ -159,35 +206,138 @@ class AttackParamUi:
 
     @handle("Modification Burst Period")
     def on_burst_period_changed(self, val):
-        self.burst_period = val
         self.command_sent = False
-        print(f"Burst period : {val} s")
+
+        period = self.clamp_with_warning(
+            val,
+            self.BURST_PERIOD_MIN,
+            self.BURST_PERIOD_MAX,
+            "Burst Period"
+        )
+
+        if period != val:
+            self.ui.doubleSpinBox_BurstPeriod.blockSignals(True)
+            self.ui.doubleSpinBox_BurstPeriod.setValue(period)
+            self.ui.doubleSpinBox_BurstPeriod.blockSignals(False)
+
+        self.burst_period = period
+
+        print(f"Burst period : {period} s")
 
     @handle("Changement Unité (Fréquence/Période)")
     def on_radioFrequency_toggled(self, checked):
-        if checked:
-            frequ_temp = self.ui.doubleSpinBox_Frequency.value()
-            self.freq = frequ_temp
-            self.ui.doubleSpinBox_Frequency.setSuffix(" Hz")
-            self.command_sent = False
+        if not checked:
+            return
+
+        self.command_sent = False
+
+        val = self.ui.doubleSpinBox_Frequency.value()
+
+        if val <= 0:
+            return
+
+        # conversion fréquence -> période
+        period = 1 / val
+
+        # clamp
+        period = self.clamp_with_warning(
+            period,
+            self.PULSE_PERIOD_MIN,
+            self.PULSE_PERIOD_MAX,
+            "Période Pulse"
+        )
+
+        # reconversion
+        freq_corrected = 1 / period
+
+        # mise à jour UI si correction
+        if freq_corrected != val:
+            self.ui.doubleSpinBox_Frequency.blockSignals(True)
+            self.ui.doubleSpinBox_Frequency.setValue(freq_corrected)
+            self.ui.doubleSpinBox_Frequency.blockSignals(False)
+
+        self.freq = freq_corrected
+        self.ui.doubleSpinBox_Frequency.setSuffix(" Hz")
 
     @handle("Changement Unité (Fréquence/Période)")
     def on_radioPeriod_toggled(self, checked):
-        if checked:
-            frequ_temp = self.ui.doubleSpinBox_Frequency.value()
-            self.freq = 1 / frequ_temp if frequ_temp != 0 else 0
-            self.ui.doubleSpinBox_Frequency.setSuffix(" s")
-            self.command_sent = False
+        if not checked:
+            return
+
+        self.command_sent = False
+
+        val = self.ui.doubleSpinBox_Frequency.value()
+
+        # ici val est une période directement
+        period = val
+
+        period = self.clamp_with_warning(
+            period,
+            self.PULSE_PERIOD_MIN,
+            self.PULSE_PERIOD_MAX,
+            "Période Pulse"
+        )
+
+        # correction UI si besoin
+        if period != val:
+            self.ui.doubleSpinBox_Frequency.blockSignals(True)
+            self.ui.doubleSpinBox_Frequency.setValue(period)
+            self.ui.doubleSpinBox_Frequency.blockSignals(False)
+
+        self.freq = 1 / period if period != 0 else 0
+        self.ui.doubleSpinBox_Frequency.setSuffix(" s")
 
     @handle("Modification Valeur Fréquence/Période")
     def on_frequency_changed(self, val):
         self.command_sent = False
+
+        # --- CAS FREQUENCE ---
         if self.ui.radioFrequency.isChecked():
-            self.freq = val
+            freq = val
+
+            if freq <= 0:
+                return
+
+            period = 1 / freq
+
+            # clamp sur la période
+            period = self.clamp_with_warning(
+                period,
+                self.PULSE_PERIOD_MIN,
+                self.PULSE_PERIOD_MAX,
+                "Période Pulse"
+            )
+
+            # reconvertir en fréquence corrigée
+            freq_corrected = 1 / period
+
+            if freq_corrected != freq:
+                self.ui.doubleSpinBox_Frequency.blockSignals(True)
+                self.ui.doubleSpinBox_Frequency.setValue(freq_corrected)
+                self.ui.doubleSpinBox_Frequency.blockSignals(False)
+
+            self.freq = freq_corrected
+
+        # --- CAS PERIODE ---
         elif self.ui.radioPeriod.isChecked():
-            self.freq = 1 / val if val != 0 else 0
+            period = val
+
+            period = self.clamp_with_warning(
+                period,
+                self.PULSE_PERIOD_MIN,
+                self.PULSE_PERIOD_MAX,
+                "Période Pulse"
+            )
+
+            if period != val:
+                self.ui.doubleSpinBox_Frequency.blockSignals(True)
+                self.ui.doubleSpinBox_Frequency.setValue(period)
+                self.ui.doubleSpinBox_Frequency.blockSignals(False)
+
+            self.freq = 1 / period if period != 0 else 0
 
         print(f"Nouvelle valeur temporelle : {val}")
+
 
     @handle("Modification Niveau Pulse")
     def on_pulse_level_changed(self, val):
@@ -252,6 +402,11 @@ class AttackParamUi:
 
         if not self.command_validity():
             print("Veuillez configurer tous les paramètres avant de sauvegarder.")
+            QMessageBox.warning(
+        self.ui,
+        "Incomplete Configuration",
+        "Please configure all parameters before saving and previewing the signal."
+    )
             return
 
         else:
@@ -375,7 +530,6 @@ class AttackParamUi:
             return
 
         else:
-            # Pense à mettre un timer de 5secondes dans cette emission pour faire le test
             time=False
             if self.is_counter_timer == 0:
                 time=True

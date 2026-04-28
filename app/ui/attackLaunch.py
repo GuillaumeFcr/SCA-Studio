@@ -10,6 +10,9 @@ class AttackUi:
         self.devices = devices
         self.devices.board = None
         self.out_directory = ""
+        self.board_thread = None
+        self.acquisition_thread = None
+        self.displayed_data = []
 
         # =========================
         # DEVICES
@@ -30,6 +33,8 @@ class AttackUi:
 
         self.ui.pushButton_outputDirectory.clicked.connect(self.on_outputDirectory_clicked)
         self.ui.pushButton_attackLaunch.clicked.connect(self.on_attackLaunch_clicked)
+
+        self.ui.pushButton_AttackStop.clicked.connect(self.on_attackStop_clicked)
 
     # =========================
     # BOARD CONNECTION
@@ -105,13 +110,64 @@ class AttackUi:
     def on_outputDirectory_clicked(self):
         self.out_directory = QFileDialog.getExistingDirectory(dir="measures")
 
+    @handle("Attack launch")
     def on_attackLaunch_clicked(self):
-        if self.acquisition_thread is None:
-            if self.devices.board is None or not self.devices.board.is_connected():
-                raise Exception("Target Board must be connected before attack")
-            if self.board_thread is not None:
-                raise Exception("Target Board must be stopped before attack")
-            if self.devices.injector is None or self.devices.injector.get_status()!=0 or not self.devices.injector.get_attackReady():
-                raise Exception("Injector must be connected, ready and stopped before attack")
-            if not self.out_directory:
-                raise Exception("Output directory must be selected before attack")
+
+        # =========================
+        # Vérifications
+        # =========================
+        if self.devices.board is None or not self.devices.board.is_connected():
+            QMessageBox.warning(self.ui, "Erreur", "Target Board must be connected")
+            return
+
+        if self.devices.injector is None:
+            QMessageBox.warning(self.ui, "Erreur", "Injector not available")
+            return
+
+        if not self.devices.injector.get_attackReady():
+            QMessageBox.warning(self.ui, "Erreur", "Injector not configured (Attack Parameters tab)")
+            return
+
+        if self.devices.injector.get_status() != 0:
+            QMessageBox.warning(self.ui, "Erreur", "Injector must be stopped before attack")
+            return
+
+        if not self.out_directory:
+            QMessageBox.warning(self.ui, "Erreur", "Select output directory")
+            return
+
+        # =========================
+        # LANCEMENT ATTAQUE
+        # =========================
+
+        # Lancer la target
+        self.devices.board.run()
+
+        # Lancer l'injection
+        self.devices.injector.send_injection()
+
+        # Récupérer résultat board
+        errors, info = self.devices.board.get()
+
+        # =========================
+        # Affichage résultat
+        # =========================
+        msg = f"Attack finished: {errors} " + ("errors" if errors > 1 else "error")
+        if info:
+            msg += f"\nInfo: {info}"
+
+        self.ui.label_5.setText("1")
+        self.ui.label_7.setText(msg)
+
+
+
+    def on_attackStop_clicked(self): #à reverifier
+        self.ui.pushButton_AttackStop.setEnabled(False)
+        if self.acquisition_thread is not None:
+            # Stop acquisition thread
+            self.acquisition_thread.stop()
+            self.acquisition_thread = None
+
+    def acquisition_refresher(self, current, max, point):
+        progress = int(current / max * 100)
+        self.ui.progressBar_attack.setValue(progress)
