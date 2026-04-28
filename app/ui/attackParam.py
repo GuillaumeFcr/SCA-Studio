@@ -379,7 +379,7 @@ class AttackParamUi:
             time=False
             if self.is_counter_timer == 0:
                 time=True
-                self.devices.injector.set_counter_mode(1)
+                self.devices.injector.set_counter_mode(2)
                 self.devices.injector.set_timer(5)
 
             print(
