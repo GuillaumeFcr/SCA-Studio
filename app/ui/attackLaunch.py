@@ -169,3 +169,4 @@ class AttackUi:
             self.ui.pushButton_AttackStop.setEnabled(False)
             #stop_attack(self.devices.board, self.devices.injector, *self.attack_thread)
             self.attack_thread = None
+            self.devices.injector.stop_injection()

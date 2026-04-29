@@ -39,7 +39,6 @@ def run_attack(
     runs_per_measure,
     out_directory,
     injector,
-    trigger,
 ):
     """Run attack in a separate thread
 
