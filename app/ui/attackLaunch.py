@@ -103,7 +103,7 @@ class AttackUi:
 
     @handle("Target Board get settings")
     def on_boardGetSettings_clicked(self):
-        settings = self.devices.board.boardGetSettings()
+        settings = self.devices.board.get_settings()
         self.ui.plainTextEdit_board_settings.setPlainText(settings)
 
     @handle("Target Board apply settings")
