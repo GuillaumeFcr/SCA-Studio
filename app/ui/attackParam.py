@@ -81,10 +81,11 @@ class AttackParamUi:
         )
         self.ui.doubleSpinBox_Timer.valueChanged.connect(self.on_timer_val_changed)
 
-        # 6. Trigger Delay
+        # 6. Trigger
         self.ui.doubleSpinBox_TriggerDelay.valueChanged.connect(
             self.on_trigger_delay_changed
         )
+        self.ui.triggerCheckBox.toggled.connect(self.on_triggerCheckBox_toggled)
 
         # 7. Bouton Save / Action
         self.ui.pushButton_SaveEmit.clicked.connect(self.on_save_view_clicked)
@@ -104,6 +105,7 @@ class AttackParamUi:
         self.delay = self.ui.doubleSpinBox_TriggerDelay.value()
         self.command_sent = False
         self.connected = False
+        self.trigger = 0
 
 
         self.PULSE_PERIOD_MIN = 50e-6      # 50 µs
@@ -194,6 +196,17 @@ class AttackParamUi:
             self.is_pulse = True
             self.command_sent = False
             print("Mode Pulse activé")
+
+    @handle("Changement Mode d'émission")
+    def on_triggerCheckBox_toggled(self, checked):
+        if checked:
+            self.trigger = 1
+            self.command_sent = False
+            print("Mode Trigger activé")
+        else:
+            self.trigger = 0
+            self.command_sent = False
+            print("Mode Trigger désactivé")
 
     @handle("Changement Mode Burst")
     def on_radioBurstMode_toggled(self, checked):
@@ -424,6 +437,7 @@ class AttackParamUi:
                 self.devices.injector.set_pulse_burst_counter(self.counter_value)
                 self.devices.injector.set_timer(self.timer_value)
                 self.devices.injector.set_trigger_delay(self.delay)
+                self.devices.injector.set_trigger(self.trigger)
                 self.command_sent = True
                 self.devices.injector.set_attackReady(True)
 
