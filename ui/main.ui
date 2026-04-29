@@ -2065,7 +2065,7 @@
              </sizepolicy>
             </property>
             <property name="title">
-             <string>Board program</string>
+             <string>Target Board settings</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_15">
              <item>
@@ -2118,6 +2118,24 @@
                 </item>
                </layout>
               </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_15">
+               <item>
+                <widget class="QLabel" name="label_9">
+                 <property name="text">
+                  <string>Number of algorithm runs for one measure :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="attackCountSpinBox">
+                 <property name="maximum">
+                  <number>100</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
               <widget class="QPlainTextEdit" name="plainTextEdit_board_settings">
@@ -2233,7 +2251,7 @@
      <x>0</x>
      <y>0</y>
      <width>1110</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="sizePolicy">
