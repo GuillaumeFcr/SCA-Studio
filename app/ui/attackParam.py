@@ -183,6 +183,10 @@ class AttackParamUi:
     def on_check_status_clicked(self):
         print("Vérification du statut du matériel...")
         print(self.devices.injector.get_status())
+        QMessageBox.warning(
+        self.ui,
+        "Injector Status",
+        self.devices.injector.get_status())
 
     @handle("Changement Mode d'émission")
     def on_radioPulseMode_toggled(self, checked):
