@@ -118,6 +118,14 @@ class AttackUi:
     def on_outputDirectory_clicked(self):
         self.out_directory = QFileDialog.getExistingDirectory(dir="measures")
 
+    def attack_refresher(self, current, max):
+        progress = int((current + 1) / max * 100)
+        self.ui.attackProgressBar.setValue(progress)
+
+        if current + 1 == max:
+            self.on_attackStop_clicked()
+
+
     @handle("Attack launch")
     def on_attackLaunch_clicked(self):
         if self.attack_thread is None:
@@ -149,6 +157,7 @@ class AttackUi:
             self.ui.pushButton_AttackStop.setEnabled(True)
             runs_per_measure = self.ui.attackCountSpinBox.value()
             self.attack_thread = run_attack(
+                self.attack_refresher,
                 self.devices.board,
                 runs_per_measure,
                 self.out_directory,
@@ -159,5 +168,5 @@ class AttackUi:
     def on_attackStop_clicked(self):
         if self.attack_thread is not None:
             self.ui.pushButton_AttackStop.setEnabled(False)
-            stop_attack(self.devices.board, self.devices.injector, *self.attack_thread)
+            #stop_attack(self.devices.board, self.devices.injector, *self.attack_thread)
             self.attack_thread = None

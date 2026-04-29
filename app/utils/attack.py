@@ -1,9 +1,11 @@
 import os
 import threading
 import numpy as np
+from datetime import datetime
 
 
 def _run_attack_thread(
+    ui_refresher,
     board,
     runs_per_measure,
     out_directory,
@@ -14,14 +16,14 @@ def _run_attack_thread(
     """Acquisition thread"""
     if trigger == 0:
         injector.send_injection()
-
+    filename = f"attack{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     for j in range(runs_per_measure):
+
         if stop_event.is_set():
             return
 
         board.run()
         errors, info = board.get()
-        filename = "attack"
         with open(
             os.path.join(out_directory, f"{filename}.errors.txt"), mode="a"
         ) as file:
@@ -30,10 +32,12 @@ def _run_attack_thread(
             os.path.join(out_directory, f"{filename}.info.txt"), mode="a"
         ) as file:
             file.write(info + "\n")
+        ui_refresher(j, runs_per_measure)
     injector.stop_injection()
 
 
 def run_attack(
+    ui_refresher,
     board,
     runs_per_measure,
     out_directory,
@@ -54,6 +58,7 @@ def run_attack(
     thread = threading.Thread(
         target=_run_attack_thread,
         args=(
+            ui_refresher,
             board,
             runs_per_measure,
             out_directory,
