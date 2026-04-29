@@ -553,7 +553,8 @@ class AttackParamUi:
                 time=True
                 self.devices.injector.set_counter_mode(2)
                 self.devices.injector.set_timer(5)
-
+            if self.trigger == 1:
+                self.devices.injector.set_trigger(0)
             print(
                 "Envoi d'un signal de test à l'injecteur avec les paramètres suivants :"
             )
@@ -570,4 +571,6 @@ class AttackParamUi:
             if time:
                 self.devices.injector.set_counter_mode(0)
                 self.devices.injector.set_timer(0)
+            if self.trigger == 1:
+                self.devices.injector.set_trigger(1)
             return
