@@ -8,17 +8,19 @@ def _run_attack_thread(
     runs_per_measure,
     out_directory,
     injector,
+    trigger,
     stop_event,
 ):
     """Acquisition thread"""
+    if trigger == 0:
+        injector.send_injection()
+
     for j in range(runs_per_measure):
         if stop_event.is_set():
             return
 
-        injector.send_injection()
         board.run()
         errors, info = board.get()
-        injector.stop_injection()
         filename = "attack"
         with open(
             os.path.join(out_directory, f"{filename}.errors.txt"), mode="a"
@@ -28,6 +30,7 @@ def _run_attack_thread(
             os.path.join(out_directory, f"{filename}.info.txt"), mode="a"
         ) as file:
             file.write(info + "\n")
+    injector.stop_injection()
 
 
 def run_attack(
@@ -35,6 +38,7 @@ def run_attack(
     runs_per_measure,
     out_directory,
     injector,
+    trigger,
 ):
     """Run attack in a separate thread
 
@@ -54,6 +58,7 @@ def run_attack(
             runs_per_measure,
             out_directory,
             injector,
+            trigger,
             stop_event,
         ),
     )

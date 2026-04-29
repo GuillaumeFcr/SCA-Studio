@@ -136,9 +136,10 @@ class AttackUi:
                 return
 
             if self.devices.injector.get_status() != "Connected, awaiting input...":
-
                 QMessageBox.warning(
-                    self.ui, "Error", f"Injector must be stopped before attack. Current status: {self.devices.injector.get_status()}"
+                    self.ui,
+                    "Error",
+                    f"Injector must be stopped before attack. Current status: {self.devices.injector.get_status()}",
                 )
                 return
 
@@ -146,12 +147,13 @@ class AttackUi:
                 QMessageBox.warning(self.ui, "Error", "Select output directory")
                 return
             self.ui.pushButton_AttackStop.setEnabled(True)
-            runs_per_measure = self.ui.acquisitionCountSpinBox.value()
+            runs_per_measure = self.ui.attackCountSpinBox.value()
             self.attack_thread = run_attack(
                 self.devices.board,
                 runs_per_measure,
                 self.out_directory,
                 self.devices.injector,
+                0,
             )
 
     def on_attackStop_clicked(self):
