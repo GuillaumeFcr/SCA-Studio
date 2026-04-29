@@ -3,6 +3,12 @@ from PySide6.QtWidgets import QApplication, QMessageBox, QFileDialog
 from app.utils.devices import get_available_devices
 from app.utils.logging import handle
 
+from app.utils.attack import (
+    parse_out_directory,
+    run_attack,
+    stop_attack,
+)
+
 
 class AttackUi:
     def __init__(self, ui, devices):
@@ -11,7 +17,7 @@ class AttackUi:
         self.devices.board = None
         self.out_directory = ""
         self.board_thread = None
-        self.acquisition_thread = None
+        self.attack_thread = None
         self.displayed_data = []
 
         # =========================
@@ -28,10 +34,16 @@ class AttackUi:
         self.ui.boardHelpButton_2.clicked.connect(self.on_boardHelpButton_clicked)
         self.ui.pushButton_boardConnect.clicked.connect(self.on_boardConnect_clicked)
 
-        self.ui.pushButton_boardGetSettings.clicked.connect(self.on_boardGetSettings_clicked)
-        self.ui.pushButton_boardSetSettings.clicked.connect(self.on_boardSetSettings_clicked)
+        self.ui.pushButton_boardGetSettings.clicked.connect(
+            self.on_boardGetSettings_clicked
+        )
+        self.ui.pushButton_boardSetSettings.clicked.connect(
+            self.on_boardSetSettings_clicked
+        )
 
-        self.ui.pushButton_outputDirectory.clicked.connect(self.on_outputDirectory_clicked)
+        self.ui.pushButton_outputDirectory.clicked.connect(
+            self.on_outputDirectory_clicked
+        )
         self.ui.pushButton_attackLaunch.clicked.connect(self.on_attackLaunch_clicked)
 
         self.ui.pushButton_AttackStop.clicked.connect(self.on_attackStop_clicked)
@@ -48,9 +60,7 @@ class AttackUi:
 
     @handle("Target Board connection")
     def on_boardConnect_clicked(self):
-
         if not self.devices.board.is_connected():
-
             self.devices.board.connect(self.ui.lineEdit_address_board.text())
 
             # enable UI
@@ -67,7 +77,6 @@ class AttackUi:
             self.ui.pushButton_boardConnect.setText("Disconnect")
 
         else:
-
             self.devices.board.disconnect()
 
             # disable UI
@@ -87,7 +96,6 @@ class AttackUi:
         help = self.devices.board.help()
         QApplication.restoreOverrideCursor()
         QMessageBox(QMessageBox.Information, "Target Board help", help).exec()
-
 
     # =========================
     # SETTINGS
@@ -112,62 +120,38 @@ class AttackUi:
 
     @handle("Attack launch")
     def on_attackLaunch_clicked(self):
+        if self.attack_thread is None:
+            if self.devices.board is None or not self.devices.board.is_connected():
+                QMessageBox.warning(self.ui, "Error", "Target Board must be connected")
+                return
 
-        # =========================
-        # Vérifications
-        # =========================
-        if self.devices.board is None or not self.devices.board.is_connected():
-            QMessageBox.warning(self.ui, "Erreur", "Target Board must be connected")
-            return
+            if self.devices.injector is None:
+                QMessageBox.warning(self.ui, "Error", "Injector not available")
+                return
 
-        if self.devices.injector is None:
-            QMessageBox.warning(self.ui, "Erreur", "Injector not available")
-            return
+            if not self.devices.injector.get_attackReady():
+                QMessageBox.warning(
+                    self.ui, "Error", "Injector not configured (Attack Parameters tab)"
+                )
+                return
 
-        if not self.devices.injector.get_attackReady():
-            QMessageBox.warning(self.ui, "Erreur", "Injector not configured (Attack Parameters tab)")
-            return
+            if self.devices.injector.get_status() != 0:
+                QMessageBox.warning(
+                    self.ui, "Error", "Injector must be stopped before attack"
+                )
+                return
 
-        if self.devices.injector.get_status() != 0:
-            QMessageBox.warning(self.ui, "Erreur", "Injector must be stopped before attack")
-            return
+            if not self.out_directory:
+                QMessageBox.warning(self.ui, "Error", "Select output directory")
+                return
+            runs_per_measure = self.ui.acquisitionCountSpinBox.value()
+            self.attack_thread = run_attack(
+                self.devices.board,
+                runs_per_measure,
+                self.out_directory,
+            )
 
-        if not self.out_directory:
-            QMessageBox.warning(self.ui, "Erreur", "Select output directory")
-            return
-
-        # =========================
-        # LANCEMENT ATTAQUE
-        # =========================
-
-        # Lancer la target
-        self.devices.board.run()
-
-        # Lancer l'injection
-        self.devices.injector.send_injection()
-
-        # Récupérer résultat board
-        errors, info = self.devices.board.get()
-
-        # =========================
-        # Affichage résultat
-        # =========================
-        msg = f"Attack finished: {errors} " + ("errors" if errors > 1 else "error")
-        if info:
-            msg += f"\nInfo: {info}"
-
-        self.ui.label_5.setText("1")
-        self.ui.label_7.setText(msg)
-
-
-
-    def on_attackStop_clicked(self): #à reverifier
-        self.ui.pushButton_AttackStop.setEnabled(False)
-        if self.acquisition_thread is not None:
-            # Stop acquisition thread
-            self.acquisition_thread.stop()
-            self.acquisition_thread = None
-
-    def acquisition_refresher(self, current, max, point):
-        progress = int(current / max * 100)
-        self.ui.progressBar_attack.setValue(progress)
+    def on_attackStop_clicked(self):
+        if self.attack_thread is not None:
+            stop_attack(self.devices.board, self.devices.injector, *self.attack_thread)
+            self.attack_thread = None
