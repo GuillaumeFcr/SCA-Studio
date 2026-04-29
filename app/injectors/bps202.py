@@ -24,6 +24,7 @@ class Injector:
         self._low_jitter_trigger_delay = 0
         self._control = 1
         self._attackReady = False
+        self._trigger = 0  # Only single pulse and bypass logic on for now
 
     def get_status(self):
         a = lib.bps_get_status()
@@ -62,6 +63,14 @@ class Injector:
     @device_logger
     def set_alternate(self, value):
         self._alternate = value
+
+    @device_logger
+    def get_trigger(self):
+        return self._trigger
+
+    @device_logger
+    def set_trigger(self, value):
+        self._trigger = value
 
     @device_logger
     def get_burst_period(self):
@@ -179,6 +188,7 @@ class Injector:
         lib.bps_set_pulse_level_index(self._pulse_level_index)
         lib.bps_set_pulse_burst_mode(self._pulse_burst_mode)
         lib.bps_set_counter_mode(0)
+        lib.bps_set_trigger_config_mode(self._trigger, 1, 1, 1)
         if self._pulse_burst_mode == 1:
             lib.bps_set_pulses_per_burst(self._pulses_per_burst)
             lib.bps_set_burst_period_ms(int(self._burst_period * 1e3))

@@ -10,15 +10,12 @@ def _run_attack_thread(
     runs_per_measure,
     out_directory,
     injector,
-    trigger,
     stop_event,
 ):
-    """Acquisition thread"""
-    if trigger == 0:
-        injector.send_injection()
+    """Attack thread"""
+    injector.send_injection()
     filename = f"attack{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     for j in range(runs_per_measure):
-
         if stop_event.is_set():
             return
 
@@ -63,7 +60,6 @@ def run_attack(
             runs_per_measure,
             out_directory,
             injector,
-            trigger,
             stop_event,
         ),
     )
@@ -72,7 +68,7 @@ def run_attack(
 
 
 def stop_attack(board, injector, thread, event):
-    """Stop the thread which runs the acquisition
+    """Stop the thread which runs the attack
 
     Args:
         board: device for the target board

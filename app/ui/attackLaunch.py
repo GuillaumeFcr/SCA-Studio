@@ -162,7 +162,6 @@ class AttackUi:
                 runs_per_measure,
                 self.out_directory,
                 self.devices.injector,
-                0,
             )
 
     def on_attackStop_clicked(self):
